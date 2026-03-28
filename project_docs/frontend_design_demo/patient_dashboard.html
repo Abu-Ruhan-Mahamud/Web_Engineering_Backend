@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CUROVA - Patient Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f5f5f7;
+            color: #333;
+        }
+
+        .header {
+            background: white;
+            padding: 1rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2.5rem;
+            align-items: center;
+        }
+
+        .nav-item {
+            color: #9ca3af;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s;
+            cursor: pointer;
+            padding-bottom: 1.5rem;
+        }
+
+        .nav-item:hover {
+            color: #1e3a8a;
+        }
+
+        .nav-item.active {
+            color: #1e3a8a;
+            border-bottom: 3px solid #1e3a8a;
+        }
+
+        .header-right {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            background: #f1f5f9;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            background: #ef4444;
+            color: white;
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        .main-container {
+            padding: 2.5rem 3rem;
+        }
+
+        .welcome-section {
+            margin-bottom: 2rem;
+        }
+
+        .welcome-title {
+            font-size: 2.5rem;
+            font-weight: 400;
+            color: #1a1a1a;
+            margin-bottom: 0.5rem;
+        }
+
+        .welcome-subtitle {
+            color: #6b7280;
+            font-size: 0.95rem;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: white;
+            padding: 1.8rem;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .view-all-link {
+            font-size: 0.9rem;
+            color: #17a2b8;
+            font-weight: 600;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .view-all-link:hover {
+            color: #138496;
+        }
+
+        .appointment-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .appointment-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            background: #f9fafb;
+            border-radius: 12px;
+            align-items: center;
+            transition: all 0.3s;
+        }
+
+        .appointment-item:hover {
+            background: #f3f4f6;
+            transform: translateX(4px);
+        }
+
+        .appointment-date {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            padding: 1rem;
+            border-radius: 10px;
+            min-width: 70px;
+        }
+
+        .appointment-day {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #1e3a8a;
+            line-height: 1;
+        }
+
+        .appointment-month {
+            font-size: 0.8rem;
+            color: #6b7280;
+            text-transform: uppercase;
+        }
+
+        .appointment-details {
+            flex: 1;
+        }
+
+        .doctor-name {
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 0.3rem;
+        }
+
+        .appointment-specialty {
+            color: #6b7280;
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .appointment-time {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            color: #17a2b8;
+        }
+
+        .status-badge {
+            padding: 0.4rem 1rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .status-upcoming {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .status-confirmed {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .action-btn {
+            background: #f1f5f9;
+            border: none;
+            padding: 1.2rem;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .action-btn:hover {
+            background: #e0f2fe;
+            transform: translateY(-2px);
+        }
+
+        .action-icon {
+            width: 50px;
+            height: 50px;
+            background: #17a2b8;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .action-icon svg {
+            width: 24px;
+            height: 24px;
+            fill: white;
+        }
+
+        .action-text {
+            font-weight: 600;
+            color: #1e3a8a;
+            font-size: 0.9rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .stat-label {
+            color: #6b7280;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            background: #e0f2fe;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .stat-icon svg {
+            width: 20px;
+            height: 20px;
+            fill: #17a2b8;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        .medication-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .medication-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: #f9fafb;
+            border-radius: 10px;
+        }
+
+        .medication-info {
+            flex: 1;
+        }
+
+        .medication-name {
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 0.3rem;
+        }
+
+        .medication-schedule {
+            color: #6b7280;
+            font-size: 0.85rem;
+        }
+
+        .medication-time {
+            background: #dbeafe;
+            color: #1e40af;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: #9ca3af;
+        }
+
+        .empty-state svg {
+            width: 80px;
+            height: 80px;
+            fill: #d1d5db;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 1200px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header,
+            .main-container {
+                padding: 1rem;
+            }
+
+            .nav-menu {
+                display: none;
+            }
+
+            .welcome-title {
+                font-size: 2rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">CUROVA</div>
+        <div class="nav-menu">
+            <a href="#" class="nav-item active">Dashboard</a>
+            <a href="#" class="nav-item">Appointments</a>
+            <a href="#" class="nav-item">Medical Records</a>
+            <a href="#" class="nav-item">Prescriptions</a>
+            <a href="#" class="nav-item">Documents</a>
+        </div>
+        <div class="header-right">
+            <div class="notification-icon">
+                🔔
+                <span class="notification-badge">3</span>
+            </div>
+            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop" alt="User" class="user-avatar">
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div class="welcome-section">
+            <h1 class="welcome-title">Welcome back, Ahmed</h1>
+            <p class="welcome-subtitle">Here's your health overview for today</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-label">Total Appointments</span>
+                    <div class="stat-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="stat-value">12</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-label">Active Medications</span>
+                    <div class="stat-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M4.22 11.29l7.07-7.07c.78-.78 2.05-.78 2.83 0l1.41 1.41c.78.78.78 2.05 0 2.83l-7.07 7.07c-.78.78-2.05.78-2.83 0L4.22 14.12c-.78-.78-.78-2.05 0-2.83zm7.07 7.07l3.54-3.54c.78-.78 2.05-.78 2.83 0l1.41 1.41c.78.78.78 2.05 0 2.83l-3.54 3.54c-.78.78-2.05.78-2.83 0l-1.41-1.41c-.78-.78-.78-2.05 0-2.83z"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="stat-value">4</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-label">Medical Records</span>
+                    <div class="stat-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="stat-value">8</div>
+            </div>
+        </div>
+
+        <div class="dashboard-grid">
+            <div class="card">
+                <div class="card-title">
+                    Upcoming Appointments
+                    <span class="view-all-link">View All →</span>
+                </div>
+                <div class="appointment-list">
+                    <div class="appointment-item">
+                        <div class="appointment-date">
+                            <div class="appointment-day">15</div>
+                            <div class="appointment-month">Jun</div>
+                        </div>
+                        <div class="appointment-details">
+                            <div class="doctor-name">Dr. Nusrat Jahan</div>
+                            <div class="appointment-specialty">Cardiologist</div>
+                            <div class="appointment-time">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
+                                </svg>
+                                10:00 AM - 11:00 AM
+                            </div>
+                        </div>
+                        <div class="status-badge status-upcoming">Upcoming</div>
+                    </div>
+
+                    <div class="appointment-item">
+                        <div class="appointment-date">
+                            <div class="appointment-day">18</div>
+                            <div class="appointment-month">Jun</div>
+                        </div>
+                        <div class="appointment-details">
+                            <div class="doctor-name">Dr. Tanvir Rahman</div>
+                            <div class="appointment-specialty">Neurologist</div>
+                            <div class="appointment-time">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
+                                </svg>
+                                2:00 PM - 3:00 PM
+                            </div>
+                        </div>
+                        <div class="status-badge status-confirmed">Confirmed</div>
+                    </div>
+
+                    <div class="appointment-item">
+                        <div class="appointment-date">
+                            <div class="appointment-day">22</div>
+                            <div class="appointment-month">Jun</div>
+                        </div>
+                        <div class="appointment-details">
+                            <div class="doctor-name">Dr. Mahmudul Islam</div>
+                            <div class="appointment-specialty">General Physician</div>
+                            <div class="appointment-time">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
+                                </svg>
+                                11:30 AM - 12:30 PM
+                            </div>
+                        </div>
+                        <div class="status-badge status-upcoming">Upcoming</div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="card" style="margin-bottom: 1.5rem;">
+                    <div class="card-title">Quick Actions</div>
+                    <div class="quick-actions">
+                        <button class="action-btn">
+                            <div class="action-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
+                                </svg>
+                            </div>
+                            <span class="action-text">Book Appointment</span>
+                        </button>
+                        <button class="action-btn">
+                            <div class="action-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+                                </svg>
+                            </div>
+                            <span class="action-text">View Records</span>
+                        </button>
+                        <button class="action-btn">
+                            <div class="action-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-8 14H9v-2h2v2zm0-4H9V7h2v6zm4 4h-2v-4h2v4zm0-6h-2V7h2v4z"/>
+                                </svg>
+                            </div>
+                            <span class="action-text">Prescriptions</span>
+                        </button>
+                        <button class="action-btn">
+                            <div class="action-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z"/>
+                                </svg>
+                            </div>
+                            <span class="action-text">Upload Document</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">
+                        Today's Medications
+                        <span class="view-all-link">View All →</span>
+                    </div>
+                    <div class="medication-list">
+                        <div class="medication-item">
+                            <div class="medication-info">
+                                <div class="medication-name">Aspirin 100mg</div>
+                                <div class="medication-schedule">After breakfast</div>
+                            </div>
+                            <div class="medication-time">9:00 AM</div>
+                        </div>
+                        <div class="medication-item">
+                            <div class="medication-info">
+                                <div class="medication-name">Metformin 500mg</div>
+                                <div class="medication-schedule">Before lunch</div>
+                            </div>
+                            <div class="medication-time">12:30 PM</div>
+                        </div>
+                        <div class="medication-item">
+                            <div class="medication-info">
+                                <div class="medication-name">Atorvastatin 20mg</div>
+                                <div class="medication-schedule">After dinner</div>
+                            </div>
+                            <div class="medication-time">9:00 PM</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

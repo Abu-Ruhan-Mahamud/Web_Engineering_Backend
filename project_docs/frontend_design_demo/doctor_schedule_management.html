@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CUROVA - Manage Schedule</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f5f5f7;
+            color: #333;
+        }
+
+        .header {
+            background: white;
+            padding: 1rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2.5rem;
+            align-items: center;
+        }
+
+        .nav-item {
+            color: #9ca3af;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s;
+            cursor: pointer;
+            padding-bottom: 1.5rem;
+        }
+
+        .nav-item.active {
+            color: #1e3a8a;
+            border-bottom: 3px solid #1e3a8a;
+        }
+
+        .header-right {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        .main-container {
+            padding: 2.5rem 3rem;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            color: #6b7280;
+            font-size: 0.95rem;
+        }
+
+        .schedule-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+        }
+
+        .card {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 1.5rem;
+        }
+
+        .working-hours-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .day-schedule {
+            padding: 1.2rem;
+            background: #f9fafb;
+            border-radius: 10px;
+            border-left: 4px solid #e5e7eb;
+        }
+
+        .day-schedule.active {
+            border-left-color: #17a2b8;
+            background: #f0f9ff;
+        }
+
+        .day-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.8rem;
+        }
+
+        .day-name {
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 26px;
+            background: #cbd5e1;
+            border-radius: 13px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .toggle-switch.active {
+            background: #17a2b8;
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            top: 3px;
+            left: 3px;
+            transition: all 0.3s;
+        }
+
+        .toggle-switch.active::after {
+            left: 27px;
+        }
+
+        .time-slots-display {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .time-badge {
+            background: white;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            color: #6b7280;
+            border: 1px solid #e5e7eb;
+        }
+
+        .add-slots-btn {
+            width: 100%;
+            background: #17a2b8;
+            color: white;
+            border: none;
+            padding: 0.8rem;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 1rem;
+        }
+
+        .add-slots-btn:hover {
+            background: #138496;
+        }
+
+        .calendar-week-view {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .week-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .week-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        .week-nav {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .nav-btn {
+            width: 35px;
+            height: 35px;
+            background: #f3f4f6;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .nav-btn:hover {
+            background: #e5e7eb;
+        }
+
+        .week-grid {
+            display: grid;
+            grid-template-columns: 80px repeat(7, 1fr);
+            gap: 1px;
+            background: #e5e7eb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .time-label {
+            background: white;
+            padding: 1rem 0.5rem;
+            text-align: center;
+            font-size: 0.8rem;
+            color: #6b7280;
+            font-weight: 600;
+        }
+
+        .day-column-header {
+            background: #f9fafb;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .day-name-short {
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 0.3rem;
+        }
+
+        .day-date {
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+
+        .time-cell {
+            background: white;
+            padding: 0.8rem;
+            min-height: 80px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .time-cell:hover {
+            background: #f9fafb;
+        }
+
+        .time-cell.available {
+            background: #ecfdf5;
+        }
+
+        .time-cell.booked {
+            background: #fef2f2;
+            cursor: not-allowed;
+        }
+
+        .appointment-block {
+            background: linear-gradient(135deg, #74C3D0 0%, #17a2b8 100%);
+            color: white;
+            padding: 0.6rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            position: absolute;
+            inset: 4px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .appointment-patient {
+            font-size: 0.85rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .appointment-reason {
+            font-size: 0.7rem;
+            opacity: 0.9;
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #17a2b8;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #6b7280;
+        }
+
+        .availability-legend {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        .close-btn {
+            width: 35px;
+            height: 35px;
+            background: #f3f4f6;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-input,
+        .form-select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem;
+        }
+
+        .time-input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .btn-save {
+            width: 100%;
+            background: #17a2b8;
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-save:hover {
+            background: #138496;
+        }
+
+        @media (max-width: 1200px) {
+            .schedule-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-row {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header,
+            .main-container {
+                padding: 1rem;
+            }
+
+            .nav-menu {
+                display: none;
+            }
+
+            .week-grid {
+                display: none;
+            }
+
+            .stats-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">CUROVA</div>
+        <div class="nav-menu">
+            <a href="#" class="nav-item">Dashboard</a>
+            <a href="#" class="nav-item active">Schedule</a>
+            <a href="#" class="nav-item">Patients</a>
+            <a href="#" class="nav-item">Medical Records</a>
+            <a href="#" class="nav-item">Messages</a>
+        </div>
+        <div class="header-right">
+            <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=100&h=100&fit=crop" alt="Doctor" class="user-avatar">
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div class="page-header">
+            <h1 class="page-title">Schedule Management</h1>
+            <p class="page-subtitle">Manage your availability and working hours</p>
+        </div>
+
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-value">42</div>
+                <div class="stat-label">This Week</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">18</div>
+                <div class="stat-label">Available Slots</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">24</div>
+                <div class="stat-label">Booked Slots</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">8h</div>
+                <div class="stat-label">Daily Hours</div>
+            </div>
+        </div>
+
+        <div class="schedule-grid">
+            <div class="card">
+                <div class="card-title">Weekly Schedule</div>
+                <div class="working-hours-list">
+                    <div class="day-schedule active">
+                        <div class="day-header">
+                            <div class="day-name">Monday</div>
+                            <div class="toggle-switch active"></div>
+                        </div>
+                        <div class="time-slots-display">
+                            <span class="time-badge">9:00 AM - 12:00 PM</span>
+                            <span class="time-badge">2:00 PM - 6:00 PM</span>
+                        </div>
+                    </div>
+
+                    <div class="day-schedule active">
+                        <div class="day-header">
+                            <div class="day-name">Tuesday</div>
+                            <div class="toggle-switch active"></div>
+                        </div>
+                        <div class="time-slots-display">
+                            <span class="time-badge">9:00 AM - 12:00 PM</span>
+                            <span class="time-badge">2:00 PM - 6:00 PM</span>
+                        </div>
+                    </div>
+
+                    <div class="day-schedule active">
+                        <div class="day-header">
+                            <div class="day-name">Wednesday</div>
+                            <div class="toggle-switch active"></div>
+                        </div>
+                        <div class="time-slots-display">
+                            <span class="time-badge">9:00 AM - 1:00 PM</span>
+                        </div>
+                    </div>
+
+                    <div class="day-schedule active">
+                        <div class="day-header">
+                            <div class="day-name">Thursday</div>
+                            <div class="toggle-switch active"></div>
+                        </div>
+                        <div class="time-slots-display">
+                            <span class="time-badge">9:00 AM - 12:00 PM</span>
+                            <span class="time-badge">2:00 PM - 6:00 PM</span>
+                        </div>
+                    </div>
+
+                    <div class="day-schedule active">
+                        <div class="day-header">
+                            <div class="day-name">Friday</div>
+                            <div class="toggle-switch active"></div>
+                        </div>
+                        <div class="time-slots-display">
+                            <span class="time-badge">9:00 AM - 12:00 PM</span>
+                            <span class="time-badge">2:00 PM - 5:00 PM</span>
+                        </div>
+                    </div>
+
+                    <div class="day-schedule">
+                        <div class="day-header">
+                            <div class="day-name">Saturday</div>
+                            <div class="toggle-switch"></div>
+                        </div>
+                        <div class="time-slots-display">
+                            <span style="color: #9ca3af; font-size: 0.85rem;">Day Off</span>
+                        </div>
+                    </div>
+
+                    <div class="day-schedule">
+                        <div class="day-header">
+                            <div class="day-name">Sunday</div>
+                            <div class="toggle-switch"></div>
+                        </div>
+                        <div class="time-slots-display">
+                            <span style="color: #9ca3af; font-size: 0.85rem;">Day Off</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="add-slots-btn" onclick="document.getElementById('slotModal').classList.add('active')">+ Add Time Slots</button>
+            </div>
+
+            <div class="card">
+                <div class="week-header">
+                    <div class="week-title">Week of Nov 2 - Nov 8, 2025</div>
+                    <div class="week-nav">
+                        <button class="nav-btn">‹</button>
+                        <button class="nav-btn">Today</button>
+                        <button class="nav-btn">›</button>
+                    </div>
+                </div>
+
+                <div class="availability-legend">
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #ecfdf5;"></div>
+                        <span>Available</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #fef2f2;"></div>
+                        <span>Booked</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: white; border: 1px solid #e5e7eb;"></div>
+                        <span>Unavailable</span>
+                    </div>
+                </div>
+
+                <div class="calendar-week-view">
+                    <div class="week-grid">
+                        <div class="time-label"></div>
+                        <div class="day-column-header">
+                            <div class="day-name-short">Mon</div>
+                            <div class="day-date">Nov 2</div>
+                        </div>
+                        <div class="day-column-header">
+                            <div class="day-name-short">Tue</div>
+                            <div class="day-date">Nov 3</div>
+                        </div>
+                        <div class="day-column-header">
+                            <div class="day-name-short">Wed</div>
+                            <div class="day-date">Nov 4</div>
+                        </div>
+                        <div class="day-column-header">
+                            <div class="day-name-short">Thu</div>
+                            <div class="day-date">Nov 5</div>
+                        </div>
+                        <div class="day-column-header">
+                            <div class="day-name-short">Fri</div>
+                            <div class="day-date">Nov 6</div>
+                        </div>
+                        <div class="day-column-header" style="background: #f3f4f6;">
+                            <div class="day-name-short">Sat</div>
+                            <div class="day-date">Nov 7</div>
+                        </div>
+                        <div class="day-column-header" style="background: #f3f4f6;">
+                            <div class="day-name-short">Sun</div>
+                            <div class="day-date">Nov 8</div>
+                        </div>
+
+                        <!-- 9 AM -->
+                        <div class="time-label">9 AM</div>
+                        <div class="time-cell available"></div>
+                        <div class="time-cell booked">
+                            <div class="appointment-block">
+                                <div class="appointment-patient">Ahmed R.</div>
+                                <div class="appointment-reason">Follow-up</div>
+                            </div>
+                        </div>
+                        <div class="time-cell available"></div>
+                        <div class="time-cell available"></div>
+                        <div class="time-cell available"></div>
+                        <div class="time-cell"></div>
+                        <div class="time-cell"></div>
+
+                        <!-- 10 AM -->
+                        <div class="time-label">10 AM</div>
+                        <div class="time-cell booked">
+                            <div class="appointment-block">
+                                <div class="appointment-patient">Fatima N.</div>
+                                <div class="appointment-reason">Checkup</div>
+                            </div>
+                        </div>
+                        <div class="time-cell available"></div>
+                        <div class="time-cell available"></div>
+                        <div class="time-cell booked">
+                            <div class="appointment-block">
+                                <div class="appointment-patient">Sarah K.</div>
+                                <div class="appointment-reason">New Patient</div>
+                            </div>
+                        </div>
+                        <div class="time-cell available"></div>
+                        <div class="time-cell"></div>
+                        <div class="time-cell"></div>
+
+                        <!-- 11 AM -->
+                        <div class="time-label">11 AM</div>
+                        <div class="time-cell available"></div>
+                        <div class="time-cell available"></div>
+                        <div class="time-cell available"></div>
+                        <div class="time-cell available"></div>
+                        <div class="time-cell booked">
+                            <div class="appointment-block">
+                                <div class="appointment-patient">Karim H.</div>
+                                <div class="appointment-reason">Post-surgery</div>
+                            </div>
+                        </div>
+                        <div class="time-cell"></div>
+                        <div class="time-cell"></div>
+
+                        <!-- 2 PM -->
+                        <div class="time-label">2 PM</div>
+                        <div class="time-cell available"></div>
+                        <div class="time-cell booked">
+                            <div class="appointment-block">
+                                <div class="appointment-patient">Rafiq I.</div>
+                                <div class="appointment-reason">ECG Results</div>
+                            </div>
+                        </div>
+                        <div class="time-cell"></div>
+                        <div class="time-cell available"></div>
+                        <div class="time-cell available"></div>
+                        <div class="time-cell"></div>
+                        <div class="time-cell"></div>
+
+                        <!-- 3 PM -->
+                        <div class="time-label">3 PM</div>
+                        <div class="time-cell available"></div>
+                        <div class="time-cell available"></div>
+                        <div class="time-cell"></div>
+                        <div class="time-cell booked">
+                            <div class="appointment-block">
+                                <div class="appointment-patient">Tania R.</div>
+                                <div class="appointment-reason">Consultation</div>
+                            </div>
+                        </div>
+                        <div class="time-cell available"></div>
+                        <div class="time-cell"></div>
+                        <div class="time-cell"></div>
+
+                        <!-- 4 PM -->
+                        <div class="time-label">4 PM</div>
+                        <div class="time-cell booked">
+                            <div class="appointment-block">
+                                <div class="appointment-patient">Nusrat J.</div>
+                                <div class="appointment-reason">Follow-up</div>
+                            </div>
+                        </div>
+                        <div class="time-cell available"></div>
+                        <div class="time-cell"></div>
+                        <div class="time-cell available"></div>
+                        <div class="time-cell available"></div>
+                        <div class="time-cell"></div>
+                        <div class="time-cell"></div>
+
+                        <!-- 5 PM -->
+                        <div class="time-label">5 PM</div>
+                        <div class="time-cell available"></div>
+                        <div class="time-cell available"></div>
+                        <div class="time-cell"></div>
+                        <div class="time-cell available"></div>
+                        <div class="time-cell"></div>
+                        <div class="time-cell"></div>
+                        <div class="time-cell"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Time Slot Modal -->
+    <div class="modal" id="slotModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Add Time Slots</h2>
+                <button class="close-btn" onclick="document.getElementById('slotModal').classList.remove('active')">×</button>
+            </div>
+
+            <form>
+                <div class="form-group">
+                    <label class="form-label">Day of Week</label>
+                    <select class="form-select" required>
+                        <option value="">Select day...</option>
+                        <option>Monday</option>
+                        <option>Tuesday</option>
+                        <option>Wednesday</option>
+                        <option>Thursday</option>
+                        <option>Friday</option>
+                        <option>Saturday</option>
+                        <option>Sunday</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Time Range</label>
+                    <div class="time-input-row">
+                        <input type="time" class="form-input" required>
+                        <input type="time" class="form-input" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Slot Duration (minutes)</label>
+                    <select class="form-select" required>
+                        <option>15 minutes</option>
+                        <option selected>30 minutes</option>
+                        <option>45 minutes</option>
+                        <option>60 minutes</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn-save">Save Time Slots</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.querySelectorAll('.toggle-switch').forEach(toggle => {
+            toggle.addEventListener('click', function() {
+                this.classList.toggle('active');
+                const daySchedule = this.closest('.day-schedule');
+                daySchedule.classList.toggle('active');
+            });
+        });
+
+        document.querySelectorAll('.time-cell.available').forEach(cell => {
+            cell.addEventListener('click', function() {
+                if (!this.classList.contains('booked')) {
+                    alert('Block this time slot?');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

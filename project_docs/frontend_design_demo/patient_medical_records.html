@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CUROVA - My Medical Records</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f5f5f7;
+            color: #333;
+        }
+
+        .header {
+            background: white;
+            padding: 1rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2.5rem;
+            align-items: center;
+        }
+
+        .nav-item {
+            color: #9ca3af;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s;
+            cursor: pointer;
+            padding-bottom: 1.5rem;
+        }
+
+        .nav-item:hover {
+            color: #1e3a8a;
+        }
+
+        .nav-item.active {
+            color: #1e3a8a;
+            border-bottom: 3px solid #1e3a8a;
+        }
+
+        .header-right {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            background: #f1f5f9;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            background: #ef4444;
+            color: white;
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        .main-container {
+            padding: 2.5rem 3rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            color: #6b7280;
+            font-size: 0.95rem;
+        }
+
+        .filters-bar {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+            padding: 0.75rem 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+        }
+
+        .filter-select {
+            padding: 0.75rem 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+            background: white;
+            cursor: pointer;
+        }
+
+        .records-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .record-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .record-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+
+        .record-header {
+            background: linear-gradient(135deg, #74C3D0 0%, #17a2b8 100%);
+            padding: 1.5rem;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .record-date {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .record-doctor {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-top: 0.3rem;
+        }
+
+        .record-specialty {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            margin-top: 0.2rem;
+        }
+
+        .expand-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .expand-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .record-body {
+            padding: 1.5rem;
+        }
+
+        .record-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .record-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .section-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-content {
+            color: #1a1a1a;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .diagnosis-badge {
+            display: inline-block;
+            background: #fef3c7;
+            color: #92400e;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .prescriptions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .prescription-item {
+            background: #f9fafb;
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 3px solid #17a2b8;
+        }
+
+        .medication-name {
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 0.3rem;
+        }
+
+        .medication-details {
+            font-size: 0.85rem;
+            color: #6b7280;
+            line-height: 1.5;
+        }
+
+        .record-footer {
+            padding: 1rem 1.5rem;
+            background: #f9fafb;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .appointment-info {
+            font-size: 0.85rem;
+            color: #6b7280;
+        }
+
+        .download-btn {
+            background: #17a2b8;
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .download-btn:hover {
+            background: #138496;
+            transform: translateY(-2px);
+        }
+
+        .empty-state {
+            background: white;
+            padding: 4rem 2rem;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .empty-state svg {
+            width: 100px;
+            height: 100px;
+            fill: #cbd5e1;
+            margin-bottom: 1.5rem;
+        }
+
+        .empty-state-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state-text {
+            color: #6b7280;
+            font-size: 0.95rem;
+        }
+
+        @media (max-width: 768px) {
+            .header,
+            .main-container {
+                padding: 1rem;
+            }
+
+            .nav-menu {
+                display: none;
+            }
+
+            .filters-bar {
+                flex-direction: column;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+
+            .record-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .prescriptions-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">CUROVA</div>
+        <div class="nav-menu">
+            <a href="#" class="nav-item">Dashboard</a>
+            <a href="#" class="nav-item">Appointments</a>
+            <a href="#" class="nav-item active">Medical Records</a>
+            <a href="#" class="nav-item">Prescriptions</a>
+            <a href="#" class="nav-item">Documents</a>
+        </div>
+        <div class="header-right">
+            <div class="notification-icon">
+                🔔
+                <span class="notification-badge">3</span>
+            </div>
+            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop" alt="User" class="user-avatar">
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div class="page-header">
+            <h1 class="page-title">My Medical Records</h1>
+            <p class="page-subtitle">View your complete medical history and consultation records</p>
+        </div>
+
+        <div class="filters-bar">
+            <input type="text" class="search-box" placeholder="🔍 Search records by diagnosis, doctor, or symptoms...">
+            <select class="filter-select">
+                <option>All Years</option>
+                <option>2025</option>
+                <option>2024</option>
+                <option>2023</option>
+            </select>
+            <select class="filter-select">
+                <option>All Doctors</option>
+                <option>Dr. Nusrat Jahan</option>
+                <option>Dr. Tanvir Rahman</option>
+                <option>Dr. Mahmudul Islam</option>
+            </select>
+            <select class="filter-select">
+                <option>All Specialties</option>
+                <option>Cardiology</option>
+                <option>Neurology</option>
+                <option>General Medicine</option>
+            </select>
+        </div>
+
+        <div class="records-list">
+            <div class="record-card">
+                <div class="record-header">
+                    <div>
+                        <div class="record-date">October 28, 2025 • 10:00 AM</div>
+                        <div class="record-doctor">Dr. Nusrat Jahan</div>
+                        <div class="record-specialty">Cardiologist</div>
+                    </div>
+                    <button class="expand-btn">View Details</button>
+                </div>
+                <div class="record-body">
+                    <div class="record-section">
+                        <div class="section-label">Chief Complaint</div>
+                        <div class="section-content">
+                            Patient complained of chest discomfort and occasional shortness of breath during physical activity.
+                        </div>
+                    </div>
+
+                    <div class="record-section">
+                        <div class="section-label">Diagnosis</div>
+                        <div class="section-content">
+                            <span class="diagnosis-badge">Mild Hypertension</span>
+                            <span class="diagnosis-badge">Stress-induced Anxiety</span>
+                        </div>
+                    </div>
+
+                    <div class="record-section">
+                        <div class="section-label">Symptoms</div>
+                        <div class="section-content">
+                            Chest tightness, elevated blood pressure (145/90), mild palpitations. No history of heart disease in family.
+                        </div>
+                    </div>
+
+                    <div class="record-section">
+                        <div class="section-label">Treatment Notes</div>
+                        <div class="section-content">
+                            Prescribed medication for blood pressure control. Advised lifestyle modifications including regular exercise, reduced salt intake, and stress management techniques. Follow-up in 4 weeks for BP monitoring.
+                        </div>
+                    </div>
+
+                    <div class="record-section">
+                        <div class="section-label">Prescriptions (3)</div>
+                        <div class="prescriptions-grid">
+                            <div class="prescription-item">
+                                <div class="medication-name">Amlodipine 5mg</div>
+                                <div class="medication-details">
+                                    Once daily (morning)<br>
+                                    Duration: 30 days<br>
+                                    Take with or without food
+                                </div>
+                            </div>
+                            <div class="prescription-item">
+                                <div class="medication-name">Aspirin 75mg</div>
+                                <div class="medication-details">
+                                    Once daily (after breakfast)<br>
+                                    Duration: 30 days<br>
+                                    Take with food
+                                </div>
+                            </div>
+                            <div class="prescription-item">
+                                <div class="medication-name">Atorvastatin 10mg</div>
+                                <div class="medication-details">
+                                    Once daily (bedtime)<br>
+                                    Duration: 30 days<br>
+                                    Take at night
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="record-footer">
+                    <div class="appointment-info">Appointment ID: APT-2025-1028</div>
+                    <button class="download-btn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+                        </svg>
+                        Download Report
+                    </button>
+                </div>
+            </div>
+
+            <div class="record-card">
+                <div class="record-header">
+                    <div>
+                        <div class="record-date">September 15, 2025 • 2:00 PM</div>
+                        <div class="record-doctor">Dr. Tanvir Rahman</div>
+                        <div class="record-specialty">Neurologist</div>
+                    </div>
+                    <button class="expand-btn">View Details</button>
+                </div>
+                <div class="record-body">
+                    <div class="record-section">
+                        <div class="section-label">Chief Complaint</div>
+                        <div class="section-content">
+                            Frequent headaches and dizziness episodes over the past 2 weeks.
+                        </div>
+                    </div>
+
+                    <div class="record-section">
+                        <div class="section-label">Diagnosis</div>
+                        <div class="section-content">
+                            <span class="diagnosis-badge">Tension Headache</span>
+                            <span class="diagnosis-badge">Sleep Deprivation</span>
+                        </div>
+                    </div>
+
+                    <div class="record-section">
+                        <div class="section-label">Symptoms</div>
+                        <div class="section-content">
+                            Bilateral headache, pressure around temples, occasional dizziness. Patient reports high work stress and irregular sleep pattern (averaging 5 hours per night).
+                        </div>
+                    </div>
+
+                    <div class="record-section">
+                        <div class="section-label">Treatment Notes</div>
+                        <div class="section-content">
+                            Recommended improved sleep hygiene (7-8 hours nightly), regular meal times, and stress reduction techniques. Prescribed pain relief medication for acute episodes. Consider physiotherapy if symptoms persist.
+                        </div>
+                    </div>
+
+                    <div class="record-section">
+                        <div class="section-label">Prescriptions (2)</div>
+                        <div class="prescriptions-grid">
+                            <div class="prescription-item">
+                                <div class="medication-name">Ibuprofen 400mg</div>
+                                <div class="medication-details">
+                                    As needed (max 3 times daily)<br>
+                                    Duration: 14 days<br>
+                                    Take with food
+                                </div>
+                            </div>
+                            <div class="prescription-item">
+                                <div class="medication-name">Magnesium 250mg</div>
+                                <div class="medication-details">
+                                    Once daily (evening)<br>
+                                    Duration: 30 days<br>
+                                    Supports relaxation
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="record-footer">
+                    <div class="appointment-info">Appointment ID: APT-2025-0915</div>
+                    <button class="download-btn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+                        </svg>
+                        Download Report
+                    </button>
+                </div>
+            </div>
+
+            <div class="record-card">
+                <div class="record-header">
+                    <div>
+                        <div class="record-date">August 10, 2025 • 11:30 AM</div>
+                        <div class="record-doctor">Dr. Mahmudul Islam</div>
+                        <div class="record-specialty">General Physician</div>
+                    </div>
+                    <button class="expand-btn">View Details</button>
+                </div>
+                <div class="record-body">
+                    <div class="record-section">
+                        <div class="section-label">Chief Complaint</div>
+                        <div class="section-content">
+                            Annual health checkup and routine blood work review.
+                        </div>
+                    </div>
+
+                    <div class="record-section">
+                        <div class="section-label">Diagnosis</div>
+                        <div class="section-content">
+                            <span class="diagnosis-badge">General Health - Good</span>
+                            <span class="diagnosis-badge">Vitamin D Deficiency</span>
+                        </div>
+                    </div>
+
+                    <div class="record-section">
+                        <div class="section-label">Assessment</div>
+                        <div class="section-content">
+                            Overall health parameters within normal range. Blood pressure: 120/80, Heart rate: 72 bpm. Blood tests show slight Vitamin D deficiency (18 ng/mL, normal >30).
+                        </div>
+                    </div>
+
+                    <div class="record-section">
+                        <div class="section-label">Treatment Notes</div>
+                        <div class="section-content">
+                            Prescribed Vitamin D supplementation. Recommended 15-20 minutes daily sun exposure. Maintain balanced diet and regular exercise. Next checkup in 6 months.
+                        </div>
+                    </div>
+
+                    <div class="record-section">
+                        <div class="section-label">Prescriptions (1)</div>
+                        <div class="prescriptions-grid">
+                            <div class="prescription-item">
+                                <div class="medication-name">Vitamin D3 2000 IU</div>
+                                <div class="medication-details">
+                                    Once daily (morning)<br>
+                                    Duration: 90 days<br>
+                                    Take with fatty meal
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="record-footer">
+                    <div class="appointment-info">Appointment ID: APT-2025-0810</div>
+                    <button class="download-btn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+                        </svg>
+                        Download Report
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        document.querySelectorAll('.expand-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const recordBody = this.closest('.record-card').querySelector('.record-body');
+                const isExpanded = recordBody.style.display === 'block';
+                recordBody.style.display = isExpanded ? 'none' : 'block';
+                this.textContent = isExpanded ? 'View Details' : 'Hide Details';
+            });
+        });
+    </script>
+</body>
+</html>

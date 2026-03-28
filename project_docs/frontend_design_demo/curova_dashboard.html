@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CUROVA - Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f5f5f7;
+            color: #333;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            padding: 1rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2.5rem;
+            align-items: center;
+        }
+
+        .nav-item {
+            color: #9ca3af;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s;
+            cursor: pointer;
+            padding-bottom: 1.5rem;
+        }
+
+        .nav-item:hover {
+            color: #1e3a8a;
+        }
+
+        .nav-item.active {
+            color: #1e3a8a;
+            border-bottom: 3px solid #1e3a8a;
+        }
+
+        .header-right {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            background: #f1f5f9;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            background: #ef4444;
+            color: white;
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        /* Main Container */
+        .main-container {
+            padding: 2.5rem 3rem;
+        }
+
+        /* Welcome Section */
+        .welcome-section {
+            margin-bottom: 2rem;
+        }
+
+        .welcome-title {
+            font-size: 3rem;
+            font-weight: 400;
+            color: #1a1a1a;
+            margin-bottom: 0.5rem;
+            line-height: 1.2;
+        }
+
+        .welcome-subtitle {
+            color: #6b7280;
+            font-size: 0.95rem;
+        }
+
+        /* Top Stats Row */
+        .stats-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.8rem;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .stat-label {
+            color: #6b7280;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .stat-change {
+            color: #10b981;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-subtext {
+            color: #9ca3af;
+            font-size: 0.85rem;
+        }
+
+        .mini-chart {
+            display: flex;
+            align-items: flex-end;
+            gap: 2px;
+            height: 40px;
+            margin-top: 1rem;
+        }
+
+        .mini-bar {
+            flex: 1;
+            background: #e5e7eb;
+            border-radius: 2px;
+            position: relative;
+        }
+
+        .mini-bar.active {
+            background: linear-gradient(to top, #5b68f4, #8b9aff);
+        }
+
+        .time-marker {
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.7rem;
+            color: #9ca3af;
+            white-space: nowrap;
+        }
+
+        /* Pie Chart Card */
+        .pie-card {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .pie-chart-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+        }
+
+        .pie-chart {
+            width: 140px;
+            height: 140px;
+            position: relative;
+        }
+
+        .pie-legend {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .legend-icon {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+        }
+
+        .legend-label {
+            font-size: 0.8rem;
+            color: #6b7280;
+            margin-right: 0.3rem;
+        }
+
+        .legend-value {
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        .legend-count {
+            font-size: 0.75rem;
+            color: #9ca3af;
+        }
+
+        /* Tabs */
+        .tabs-container {
+            margin-bottom: 1.5rem;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 2rem;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .tab {
+            padding: 0.8rem 0;
+            color: #9ca3af;
+            font-weight: 500;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            color: #1e3a8a;
+            border-bottom-color: #1e3a8a;
+        }
+
+        /* Content Grid */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+        }
+
+        /* Chart Section */
+        .chart-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .chart-stats {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chart-label {
+            color: #9ca3af;
+            font-size: 0.85rem;
+        }
+
+        .chart-value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        .chart-value-change {
+            color: #10b981;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .chart-legend {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 0.5rem;
+        }
+
+        .chart-area {
+            height: 300px;
+            display: flex;
+            align-items: flex-end;
+            gap: 1.5rem;
+            padding-top: 2rem;
+        }
+
+        .chart-month {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .chart-bars {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            height: 100%;
+            justify-content: flex-end;
+        }
+
+        .chart-bar {
+            width: 100%;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .chart-bar.consultation {
+            background: #5b68f4;
+        }
+
+        .chart-bar.checkup {
+            background: #38bdf8;
+        }
+
+        .month-label {
+            color: #9ca3af;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        /* Doctor Appointment Section */
+        .appointment-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .appointment-card {
+            background: white;
+            padding: 1.8rem;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .appointment-header {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 0.5rem;
+        }
+
+        .appointment-subtitle {
+            color: #9ca3af;
+            font-size: 0.85rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .timer {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 1.5rem;
+        }
+
+        .doctor-main {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            margin-bottom: 1rem;
+        }
+
+        .doctor-image {
+            width: 120px;
+            height: 140px;
+            border-radius: 12px;
+            object-fit: cover;
+        }
+
+        .doctor-info {
+            flex: 1;
+        }
+
+        .doctor-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 0.3rem;
+        }
+
+        .doctor-specialty {
+            color: #6b7280;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .qr-code {
+            width: 80px;
+            height: 80px;
+            background: #000;
+            border-radius: 8px;
+        }
+
+        .dots-indicator {
+            display: flex;
+            gap: 0.4rem;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #cbd5e1;
+            cursor: pointer;
+        }
+
+        .dot.active {
+            background: #38bdf8;
+            width: 24px;
+            border-radius: 4px;
+        }
+
+        /* Doctor List */
+        .doctors-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .doctor-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: #f9fafb;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .doctor-item:hover {
+            background: #f3f4f6;
+            transform: translateX(4px);
+        }
+
+        .doctor-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .doctor-details {
+            flex: 1;
+        }
+
+        .doctor-item-name {
+            font-weight: 600;
+            color: #1a1a1a;
+            font-size: 0.95rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .doctor-item-specialty {
+            color: #9ca3af;
+            font-size: 0.8rem;
+        }
+
+        .doctor-menu {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: #9ca3af;
+        }
+
+        .search-box {
+            width: 100%;
+            max-width: 400px;
+            padding: 0.75rem 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .stats-row {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header,
+            .main-container {
+                padding: 1rem;
+            }
+
+            .nav-menu {
+                display: none;
+            }
+
+            .welcome-title {
+                font-size: 2rem;
+            }
+
+            .stats-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="logo">CUROVA</div>
+        <div class="nav-menu">
+            <a href="#" class="nav-item active">Dashboard</a>
+            <a href="#" class="nav-item">Patient</a>
+            <a href="#" class="nav-item">Labs</a>
+            <a href="#" class="nav-item">Billing</a>
+            <a href="#" class="nav-item">Appointment</a>
+        </div>
+        <div class="header-right">
+            <div class="notification-icon">
+                🔔
+                <span class="notification-badge">8</span>
+            </div>
+            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop" alt="User" class="user-avatar">
+        </div>
+    </div>
+
+    <script>
+        // Tab switching
+        const tabs = document.querySelectorAll('.tab');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                tabs.forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Timer countdown
+        let timeLeft = 1815; // 30:15 in seconds
+        const timerElement = document.querySelector('.timer');
+        
+        function updateTimer() {
+            const hours = Math.floor(timeLeft / 3600);
+            const minutes = Math.floor((timeLeft % 3600) / 60);
+            const seconds = timeLeft % 60;
+            
+            const display = `⏱️ ${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            timerElement.textContent = display;
+            
+            if (timeLeft > 0) {
+                timeLeft--;
+            }
+        }
+        
+        setInterval(updateTimer, 1000);
+
+        // Dots indicator animation
+        const dots = document.querySelectorAll('.dot');
+        let currentDot = 0;
+
+        setInterval(() => {
+            dots.forEach(dot => dot.classList.remove('active'));
+            currentDot = (currentDot + 1) % dots.length;
+            dots[currentDot].classList.add('active');
+        }, 3000);
+
+        // Doctor items hover effect
+        const doctorItems = document.querySelectorAll('.doctor-item');
+        doctorItems.forEach(item => {
+            item.addEventListener('click', function() {
+                console.log('Doctor selected:', this.querySelector('.doctor-item-name').textContent);
+            });
+        });
+    </script>
+</body>
+</html>>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Welcome Section -->
+        <div class="welcome-section">
+            <h1 class="welcome-title">Welcome<br>back, Admin</h1>
+            <p class="welcome-subtitle">Monitor patient status and doctor schedules for efficient appointments and timely care.</p>
+        </div>
+
+        <!-- Stats Row -->
+        <div class="stats-row">
+            <!-- Patient Stats -->
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-label">Patient</span>
+                    <span class="stat-change">
+                        <span>↗</span> 32.1%
+                    </span>
+                </div>
+                <div class="stat-value">120</div>
+                <div class="stat-subtext">Patient (Today)</div>
+                <div class="mini-chart">
+                    <div class="mini-bar" style="height: 30%"></div>
+                    <div class="mini-bar" style="height: 25%"></div>
+                    <div class="mini-bar" style="height: 35%"></div>
+                    <div class="mini-bar" style="height: 40%"></div>
+                    <div class="mini-bar" style="height: 45%"></div>
+                    <div class="mini-bar" style="height: 38%"></div>
+                    <div class="mini-bar" style="height: 42%"></div>
+                    <div class="mini-bar" style="height: 55%"></div>
+                    <div class="mini-bar" style="height: 48%"></div>
+                    <div class="mini-bar active" style="height: 80%">
+                        <span class="time-marker">10.00 - 11.00</span>
+                    </div>
+                    <div class="mini-bar" style="height: 35%"></div>
+                    <div class="mini-bar" style="height: 30%"></div>
+                    <div class="mini-bar" style="height: 25%">
+                        <span class="time-marker">12.00 - 01.00</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Avg Diagnose -->
+            <div class="stat-card pie-card">
+                <div class="stat-header">
+                    <span class="stat-label">Avg Diagnose</span>
+                    <span style="cursor: pointer;">↗</span>
+                </div>
+                <div class="pie-chart-container">
+                    <svg class="pie-chart" viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="40" fill="none" stroke="#22c55e" stroke-width="20" 
+                                stroke-dasharray="100.5 251.2" transform="rotate(-90 50 50)"/>
+                        <circle cx="50" cy="50" r="40" fill="none" stroke="#38bdf8" stroke-width="20" 
+                                stroke-dasharray="25.1 251.2" stroke-dashoffset="-100.5" transform="rotate(-90 50 50)"/>
+                        <circle cx="50" cy="50" r="40" fill="none" stroke="#5b68f4" stroke-width="20" 
+                                stroke-dasharray="125.6 251.2" stroke-dashoffset="-125.6" transform="rotate(-90 50 50)"/>
+                    </svg>
+                    <div class="pie-legend">
+                        <div class="legend-item">
+                            <div class="legend-icon" style="background: #22c55e;"></div>
+                            <span class="legend-label">Neurology</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-value">54,071</span>
+                            <span class="legend-count">Patients</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-icon" style="background: #38bdf8;"></div>
+                            <span class="legend-label">Oncology</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-value">32,210</span>
+                            <span class="legend-count">Patients</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-icon" style="background: #5b68f4;"></div>
+                            <span class="legend-label">Urology</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-value">24,410</span>
+                            <span class="legend-count">Patients</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs-container">
+            <div class="tabs">
+                <div class="tab active">Overview</div>
+                <div class="tab">Medical Reports</div>
+                <div class="tab">Patients Overview</div>
+                <div class="tab">Doctor's List</div>
+            </div>
+        </div>
+
+        <!-- Search Bar -->
+        <div style="margin-bottom: 1.5rem;">
+            <input type="text" class="search-box" placeholder="🔍 Search...">
+        </div>
+
+        <!-- Content Grid -->
+        <div class="content-grid">
+            <!-- Chart Section -->
+            <div class="chart-section">
+                <div class="chart-header">
+                    <div class="chart-stats">
+                        <span class="chart-label">Avg per month</span>
+                        <div>
+                            <span class="chart-value">৳138,500</span>
+                            <span class="chart-value-change">
+                                <span>↗</span> 14.4%
+                            </span>
+                        </div>
+                    </div>
+                    <div class="chart-legend">
+                        <span><span class="legend-dot" style="background: #5b68f4;"></span>Consultation</span>
+                        <span><span class="legend-dot" style="background: #38bdf8;"></span>Medical Checkup</span>
+                        <span><span class="legend-dot" style="background: #8b9aff;"></span>Avg</span>
+                        <span>⋯</span>
+                    </div>
+                </div>
+                <div class="chart-area">
+                    <div class="chart-month">
+                        <div class="chart-bars">
+                            <div class="chart-bar checkup" style="height: 40%"></div>
+                            <div class="chart-bar consultation" style="height: 30%"></div>
+                        </div>
+                        <span class="month-label">Jan</span>
+                    </div>
+                    <div class="chart-month">
+                        <div class="chart-bars">
+                            <div class="chart-bar checkup" style="height: 35%"></div>
+                            <div class="chart-bar consultation" style="height: 55%"></div>
+                        </div>
+                        <span class="month-label">Feb</span>
+                    </div>
+                    <div class="chart-month">
+                        <div class="chart-bars">
+                            <div class="chart-bar checkup" style="height: 55%"></div>
+                            <div class="chart-bar consultation" style="height: 60%"></div>
+                        </div>
+                        <span class="month-label">Mar</span>
+                    </div>
+                    <div class="chart-month">
+                        <div class="chart-bars">
+                            <div class="chart-bar checkup" style="height: 30%"></div>
+                            <div class="chart-bar consultation" style="height: 90%"></div>
+                        </div>
+                        <span class="month-label">Apr</span>
+                    </div>
+                    <div class="chart-month">
+                        <div class="chart-bars">
+                            <div class="chart-bar checkup" style="height: 48%"></div>
+                            <div class="chart-bar consultation" style="height: 65%"></div>
+                        </div>
+                        <span class="month-label">May</span>
+                    </div>
+                    <div class="chart-month">
+                        <div class="chart-bars">
+                            <div class="chart-bar checkup" style="height: 35%"></div>
+                            <div class="chart-bar consultation" style="height: 50%"></div>
+                        </div>
+                        <span class="month-label">Jun</span>
+                    </div>
+                    <div class="chart-month">
+                        <div class="chart-bars">
+                            <div class="chart-bar checkup" style="height: 40%"></div>
+                            <div class="chart-bar consultation" style="height: 75%"></div>
+                        </div>
+                        <span class="month-label">Jul</span>
+                    </div>
+                    <div class="chart-month">
+                        <div class="chart-bars">
+                            <div class="chart-bar checkup" style="height: 25%"></div>
+                            <div class="chart-bar consultation" style="height: 85%"></div>
+                        </div>
+                        <span class="month-label">Aug</span>
+                    </div>
+                    <div class="chart-month">
+                        <div class="chart-bars">
+                            <div class="chart-bar checkup" style="height: 45%"></div>
+                            <div class="chart-bar consultation" style="height: 70%"></div>
+                        </div>
+                        <span class="month-label">Sep</span>
+                    </div>
+                    <div class="chart-month">
+                        <div class="chart-bars">
+                            <div class="chart-bar checkup" style="height: 35%"></div>
+                            <div class="chart-bar consultation" style="height: 60%"></div>
+                        </div>
+                        <span class="month-label">Oct</span>
+                    </div>
+                    <div class="chart-month">
+                        <div class="chart-bars">
+                            <div class="chart-bar checkup" style="height: 30%"></div>
+                            <div class="chart-bar consultation" style="height: 95%"></div>
+                        </div>
+                        <span class="month-label">Nov</span>
+                    </div>
+                    <div class="chart-month">
+                        <div class="chart-bars">
+                            <div class="chart-bar checkup" style="height: 48%"></div>
+                            <div class="chart-bar consultation" style="height: 70%"></div>
+                        </div>
+                        <span class="month-label">Dec</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Appointment Section -->
+            <div class="appointment-section">
+                <!-- Doctor Appointment Card -->
+                <div class="appointment-card">
+                    <h3 class="appointment-header">Doctor Appointment</h3>
+                    <p class="appointment-subtitle">Prepare to discuss with doctor</p>
+                    <div class="timer">
+                        ⏱️ 00:30:15
+                    </div>
+                    <div class="doctor-main">
+                        <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=200&h=300&fit=crop" alt="Dr. Samira Hossain" class="doctor-image">
+                        <div class="doctor-info">
+                            <div class="doctor-name">Dr. Samira Hossain</div>
+                            <div class="doctor-specialty">Neurosurgery Specialist</div>
+                        </div>
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23000'/%3E%3Crect x='10' y='10' width='10' height='10' fill='%23fff'/%3E%3Crect x='30' y='10' width='10' height='10' fill='%23fff'/%3E%3Crect x='50' y='10' width='10' height='10' fill='%23fff'/%3E%3Crect x='70' y='10' width='10' height='10' fill='%23fff'/%3E%3C/svg%3E" alt="QR Code" class="qr-code">
+                    </div>
+                    <div class="dots-indicator">
+                        <div class="dot active"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                </div>
+
+                <!-- Doctors List -->
+                <div class="appointment-card">
+                    <div class="doctors-list">
+                        <div class="doctor-item">
+                            <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=100&h=100&fit=crop" alt="Dr. Rahim" class="doctor-avatar">
+                            <div class="doctor-details">
+                                <div class="doctor-item-name">Dr. Rahim</div>
+                                <div class="doctor-item-specialty">General Practitioners</div>
+                            </div>
+                            <button class="doctor-menu">⋯</button>
+                        </div>
+                        <div class="doctor-item">
+                            <img src="https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=100&h=100&fit=crop" alt="Dr. Farhana" class="doctor-avatar">
+                            <div class="doctor-details">
+                                <div class="doctor-item-name">Dr. Farhana</div>
+                                <div class="doctor-item-specialty">Neurosurgery Specialist</div>
+                            </div>
+                            <button class="doctor-menu">⋯</button>
+                        </div>
+                        <div class="doctor-item">
+                            <img src="https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=100&h=100&fit=crop" alt="Dr. Karim" class="doctor-avatar">
+                            <div class="doctor-details">
+                                <div class="doctor-item-name">Dr. Karim</div>
+                                <div class="doctor-item-specialty">Neurosurgery Specialist</div>
+                            </div>
+                            <button class="doctor-menu">⋯</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div

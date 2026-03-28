@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CUROVA - Healthcare at Your Fingertips</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #ffffff;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 5%;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #64748b;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: #1e3a8a;
+        }
+
+        .nav-right {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .call-text {
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        .phone {
+            color: #1e3a8a;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background: #1e3a8a;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary:hover {
+            background: #1e40af;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(30, 58, 138, 0.3);
+        }
+
+        /* Hero Section */
+        .hero {
+            width: 100%;
+            height: 450px;
+            background: url('https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?w=1600&h=600&fit=crop') center/cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, rgba(30, 58, 138, 0.3), rgba(30, 58, 138, 0.1));
+        }
+
+        /* Section Styling */
+        section {
+            padding: 4rem 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            color: #1e3a8a;
+            margin-bottom: 2rem;
+            font-weight: 700;
+        }
+
+        .section-title span {
+            color: #60a5fa;
+        }
+
+        /* Doctors Section */
+        .doctors-container {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .doctors-grid {
+            display: flex;
+            gap: 1.5rem;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            padding-bottom: 1rem;
+            scrollbar-width: none;
+        }
+
+        .doctors-grid::-webkit-scrollbar {
+            display: none;
+        }
+
+        .doctor-card {
+            min-width: 200px;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .doctor-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .doctor-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .doctor-info {
+            padding: 1.2rem;
+            text-align: center;
+        }
+
+        .doctor-name {
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-bottom: 0.3rem;
+            font-size: 1rem;
+        }
+
+        .doctor-specialty {
+            color: #64748b;
+            font-size: 0.85rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .doctor-location {
+            color: #94a3b8;
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #1e3a8a;
+            padding: 0.6rem 1.5rem;
+            border: 2px solid #1e3a8a;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+        }
+
+        .btn-secondary:hover {
+            background: #1e3a8a;
+            color: white;
+        }
+
+        .view-all {
+            color: #60a5fa;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 1.5rem;
+            display: inline-block;
+            transition: color 0.3s;
+        }
+
+        .view-all:hover {
+            color: #1e3a8a;
+        }
+
+        /* Quick Consult Section */
+        .consult-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .consult-card {
+            background: rgba(27, 169, 181, 0.15);
+            padding: 1.5rem;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .consult-card:hover {
+            background: rgba(27, 169, 181, 0.25);
+            transform: translateY(-4px);
+            box-shadow: 0 4px 12px rgba(27, 169, 181, 0.2);
+        }
+
+        .consult-icon {
+            width: 50px;
+            height: 50px;
+            background: #1ba9b5;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .consult-icon svg {
+            width: 26px;
+            height: 26px;
+            fill: white;
+        }
+
+        .consult-text {
+            color: #1e3a8a;
+            font-weight: 600;
+        }
+
+        /* Testimonial Section */
+        .testimonial {
+            background: #f1f5f9;
+            padding: 4rem 5%;
+        }
+
+        .testimonial-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .testimonial-container {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .testimonial-slider {
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+
+        .testimonial-slide {
+            min-width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .testimonial-image-wrapper {
+            width: 100%;
+            max-width: 350px;
+            height: 400px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+        }
+
+        .testimonial-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .testimonial-text {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .quote {
+            font-size: 1.2rem;
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 2rem;
+            font-style: italic;
+        }
+
+        .customer-name {
+            font-weight: 700;
+            color: #1e3a8a;
+            font-size: 1.1rem;
+        }
+
+        .customer-label {
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        .testimonial-controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+        }
+
+        .testimonial-arrow {
+            width: 45px;
+            height: 45px;
+            background: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .testimonial-arrow:hover {
+            background: #1e3a8a;
+            transform: scale(1.1);
+        }
+
+        .testimonial-arrow:hover svg {
+            fill: white;
+        }
+
+        .testimonial-arrow svg {
+            width: 20px;
+            height: 20px;
+            fill: #1e3a8a;
+            transition: fill 0.3s;
+        }
+
+        /* Footer */
+        footer {
+            background: #1e293b;
+            color: white;
+            padding: 3rem 5%;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+            gap: 3rem;
+            max-width: 1400px;
+            margin: 0 auto 2rem;
+        }
+
+        .footer-brand {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .footer-description {
+            color: #94a3b8;
+            line-height: 1.8;
+            font-size: 0.95rem;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.7rem;
+        }
+
+        .footer-links a {
+            color: #94a3b8;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: #60a5fa;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            background: #334155;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .social-icon:hover {
+            background: #60a5fa;
+            transform: translateY(-3px);
+        }
+
+        .social-icon svg {
+            width: 20px;
+            height: 20px;
+            fill: white;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid #334155;
+            color: #94a3b8;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .testimonial-slide {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="logo">CUROVA</div>
+        <div class="nav-links">
+            <a href="#" class="active">Healthcare</a>
+            <a href="#">Services</a>
+            <a href="#">About Us</a>
+        </div>
+        <div class="nav-right">
+            <span class="call-text">Call <span class="phone">01764860972</span> or</span>
+            <button class="btn-primary">Consult Online</button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero"></div>
+
+    <!-- Top Rated Doctors -->
+    <section>
+        <h2 class="section-title">Top Rated <span>Doctors</span> Near You</h2>
+        <div class="doctors-container">
+            <div class="doctors-grid">
+                <div class="doctor-card">
+                    <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&h=400&fit=crop" alt="Dr. Nusrat Jahan" class="doctor-image">
+                    <div class="doctor-info">
+                        <div class="doctor-name">Dr. Nusrat Jahan</div>
+                        <div class="doctor-specialty">Orthotic Surgeon</div>
+                        <div class="doctor-location">Chattogram, Bangladesh</div>
+                        <button class="btn-secondary">Consult Now</button>
+                    </div>
+                </div>
+                <div class="doctor-card">
+                    <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400&h=400&fit=crop" alt="Dr. Tanvir Rahman" class="doctor-image">
+                    <div class="doctor-info">
+                        <div class="doctor-name">Dr. Tanvir Rahman</div>
+                        <div class="doctor-specialty">Neurologist</div>
+                        <div class="doctor-location">Dhaka, Bangladesh</div>
+                        <button class="btn-secondary">Consult Now</button>
+                    </div>
+                </div>
+                <div class="doctor-card">
+                    <img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=400&h=400&fit=crop" alt="Dr. Shakil Ahmed" class="doctor-image">
+                    <div class="doctor-info">
+                        <div class="doctor-name">Dr. Shakil Ahmed</div>
+                        <div class="doctor-specialty">Orthopedist and Joint</div>
+                        <div class="doctor-location">Sylhet, Bangladesh</div>
+                        <button class="btn-secondary">Consult Now</button>
+                    </div>
+                </div>
+                <div class="doctor-card">
+                    <img src="https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=400&h=400&fit=crop" alt="Dr. Mahmudul Islam" class="doctor-image">
+                    <div class="doctor-info">
+                        <div class="doctor-name">Dr. Mahmudul Islam</div>
+                        <div class="doctor-specialty">Cardiologist</div>
+                        <div class="doctor-location">Chattogram, Bangladesh</div>
+                        <button class="btn-secondary">Consult Now</button>
+                    </div>
+                </div>
+                <div class="doctor-card">
+                    <img src="https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=400&h=400&fit=crop" alt="Dr. Md. Arif Hossain" class="doctor-image">
+                    <div class="doctor-info">
+                        <div class="doctor-name">Dr. Md. Arif Hossain</div>
+                        <div class="doctor-specialty">Cardiac Surgeon</div>
+                        <div class="doctor-location">Chattogram, Bangladesh</div>
+                        <button class="btn-secondary">Consult Now</button>
+                    </div>
+                </div>
+                <div class="doctor-card">
+                    <img src="https://images.unsplash.com/photo-1666214280557-f1b5022eb634?w=400&h=400&fit=crop" alt="Dr. Shakil Ahmed" class="doctor-image">
+                    <div class="doctor-info">
+                        <div class="doctor-name">Dr. Shakil Ahmed</div>
+                        <div class="doctor-specialty">Medical Oncologist</div>
+                        <div class="doctor-location">Dhaka, Bangladesh</div>
+                        <button class="btn-secondary">Consult Now</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="view-all">View All →</div>
+    </section>
+
+    <!-- Quick Consult -->
+    <section>
+        <h2 class="section-title">Quick <span>Consult For</span></h2>
+        <div class="consult-grid">
+            <div class="consult-card">
+                <div class="consult-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                </div>
+                <div class="consult-text">Heart</div>
+            </div>
+            <div class="consult-card">
+                <div class="consult-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2C8.69 2 6 4.69 6 8c0 1.89.89 3.57 2.26 4.66C5.64 14.24 4 16.81 4 20h2c0-3.31 2.69-6 6-6s6 2.69 6 6h2c0-3.19-1.64-5.76-4.26-7.34C17.11 11.57 18 9.89 18 8c0-3.31-2.69-6-6-6zm0 2c2.21 0 4 1.79 4 4s-1.79 4-4 4-4-1.79-4-4 1.79-4 4-4z"/></svg>
+                </div>
+                <div class="consult-text">Asthma</div>
+            </div>
+            <div class="consult-card">
+                <div class="consult-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2C8.69 2 6 4.69 6 8c0 1.89.89 3.57 2.26 4.66C5.64 14.24 4 16.81 4 20h2c0-3.31 2.69-6 6-6s6 2.69 6 6h2c0-3.19-1.64-5.76-4.26-7.34C17.11 11.57 18 9.89 18 8c0-3.31-2.69-6-6-6z"/></svg>
+                </div>
+                <div class="consult-text">Lungs</div>
+            </div>
+            <div class="consult-card">
+                <div class="consult-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm4-8c0 2.21-1.79 4-4 4s-4-1.79-4-4 1.79-4 4-4 4 1.79 4 4z"/></svg>
+                </div>
+                <div class="consult-text">Oxygen</div>
+            </div>
+            <div class="consult-card">
+                <div class="consult-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h10c2.76 0 5-2.24 5-5s-2.24-5-5-5zM7 15c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z"/></svg>
+                </div>
+                <div class="consult-text">Diabetics</div>
+            </div>
+            <div class="consult-card">
+                <div class="consult-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zM7 10h2v7H7zm4-3h2v10h-2zm4 6h2v4h-2z"/></svg>
+                </div>
+                <div class="consult-text">Prescribe</div>
+            </div>
+            <div class="consult-card">
+                <div class="consult-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+                </div>
+                <div class="consult-text">Oxygen</div>
+            </div>
+            <div class="consult-card">
+                <div class="consult-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                </div>
+                <div class="consult-text">Heart</div>
+            </div>
+            <div class="consult-card">
+                <div class="consult-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h10c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>
+                </div>
+                <div class="consult-text">Diabetics</div>
+            </div>
+            <div class="consult-card">
+                <div class="consult-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2C8.69 2 6 4.69 6 8c0 1.89.89 3.57 2.26 4.66C5.64 14.24 4 16.81 4 20h2c0-3.31 2.69-6 6-6s6 2.69 6 6h2c0-3.19-1.64-5.76-4.26-7.34z"/></svg>
+                </div>
+                <div class="consult-text">Asthma</div>
+            </div>
+            <div class="consult-card">
+                <div class="consult-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2C8.69 2 6 4.69 6 8c0 1.89.89 3.57 2.26 4.66C5.64 14.24 4 16.81 4 20h2c0-3.31 2.69-6 6-6s6 2.69 6 6h2c0-3.19-1.64-5.76-4.26-7.34z"/></svg>
+                </div>
+                <div class="consult-text">Lungs</div>
+            </div>
+            <div class="consult-card">
+                <div class="consult-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                </div>
+                <div class="consult-text">Heart</div>
+            </div>
+        </div>
+        <div class="view-all">View All →</div>
+    </section>
+
+    <!-- Testimonials -->
+    <div class="testimonial">
+        <div class="testimonial-wrapper">
+            <h2 class="section-title">Our <span>patients</span> feedback about us</h2>
+            <div class="testimonial-container">
+                <div class="testimonial-slider" id="testimonialSlider">
+                    <div class="testimonial-slide">
+                        <div class="testimonial-image-wrapper">
+                            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=500&fit=crop" alt="Fatima Noor" class="testimonial-image">
+                        </div>
+                        <div class="testimonial-text">
+                            <p class="quote">"Curova is a web app designed to help you stay healthy and access medical care easily. It provides 24/7 doctor consultations along with a convenient medicine delivery service."</p>
+                            <div class="customer-name">Fatima Noor</div>
+                            <div class="customer-label">CUROVA Customer</div>
+                        </div>
+                    </div>
+                    <div class="testimonial-slide">
+                        <div class="testimonial-image-wrapper">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=500&fit=crop" alt="Ahmed Rahman" class="testimonial-image">
+                        </div>
+                        <div class="testimonial-text">
+                            <p class="quote">"The platform has revolutionized how I access healthcare. The doctors are professional, responsive, and the medicine delivery is incredibly fast. Highly recommended!"</p>
+                            <div class="customer-name">Ahmed Rahman</div>
+                            <div class="customer-label">CUROVA Customer</div>
+                        </div>
+                    </div>
+                    <div class="testimonial-slide">
+                        <div class="testimonial-image-wrapper">
+                            <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=500&fit=crop" alt="Sarah Khan" class="testimonial-image">
+                        </div>
+                        <div class="testimonial-text">
+                            <p class="quote">"As a busy professional, Curova has been a lifesaver. I can consult with top doctors from the comfort of my home. The service quality is exceptional and truly convenient."</p>
+                            <div class="customer-name">Sarah Khan</div>
+                            <div class="customer-label">CUROVA Customer</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-controls">
+                    <button class="testimonial-arrow" id="prevBtn">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                        </svg>
+                    </button>
+                    <button class="testimonial-arrow" id="nextBtn">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div>
+                <div class="footer-brand">CUROVA</div>
+                <p class="footer-description">Health care involves the services and actions taken by medical professionals to maintain, protect, and improve physical and mental health. It also encompasses support for emotional well-being, provided by individuals and organizations dedicated to patient care.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Overview</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Medicines</a></li>
+                    <li><a href="#">Healthcare Devices</a></li>
+                    <li><a href="#">Health Progress</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Company</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">About us</a></li>
+                    <li><a href="#">Services</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Explore</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Blogs & Feeds</a></li>
+                    <li><a href="#">Privacy Police</a></li>
+                    <li><a href="#">Cookies</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Social Media</h3>
+                <div class="social-icons">
+                    <div class="social-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                        </svg>
+                    </div>
+                    <div class="social-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                        </svg>
+                    </div>
+                    <div class="social-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            Copyright © CUROVA 2025
+        </div>
+    </footer>
+
+    <script>
+        // Testimonial Slider
+        let currentSlide = 0;
+        const slider = document.getElementById('testimonialSlider');
+        const slides = document.querySelectorAll('.testimonial-slide');
+        const totalSlides = slides.length;
+
+        document.getElementById('nextBtn').addEventListener('click', () => {
+            currentSlide = (currentSlide + 1) % totalSlides;
+            updateSlider();
+        });
+
+        document.getElementById('prevBtn').addEventListener('click', () => {
+            currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+            updateSlider();
+        });
+
+        function updateSlider() {
+            slider.style.transform = `translateX(-${currentSlide * 100}%)`;
+        }
+    </script>
+</body>
+</html>

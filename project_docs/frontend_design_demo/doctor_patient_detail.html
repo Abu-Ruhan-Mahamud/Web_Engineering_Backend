@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CUROVA - Patient Details</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f5f5f7;
+            color: #333;
+        }
+
+        .header {
+            background: white;
+            padding: 1rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2.5rem;
+            align-items: center;
+        }
+
+        .nav-item {
+            color: #9ca3af;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s;
+            cursor: pointer;
+            padding-bottom: 1.5rem;
+        }
+
+        .nav-item:hover {
+            color: #1e3a8a;
+        }
+
+        .nav-item.active {
+            color: #1e3a8a;
+            border-bottom: 3px solid #1e3a8a;
+        }
+
+        .header-right {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            background: #f1f5f9;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        .main-container {
+            padding: 2.5rem 3rem;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #17a2b8;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .back-button:hover {
+            color: #138496;
+        }
+
+        .patient-header-card {
+            background: linear-gradient(135deg, #74C3D0 0%, #17a2b8 100%);
+            padding: 2rem;
+            border-radius: 16px;
+            color: white;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 12px rgba(23, 162, 184, 0.2);
+        }
+
+        .patient-header-content {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .patient-avatar-large {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid white;
+        }
+
+        .patient-info {
+            flex: 1;
+        }
+
+        .patient-name-header {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .patient-meta {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            opacity: 0.95;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn-primary {
+            background: white;
+            color: #17a2b8;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+        }
+
+        .card {
+            background: white;
+            padding: 1.8rem;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 1.5rem;
+        }
+
+        .info-row {
+            display: flex;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-size: 0.9rem;
+            color: #6b7280;
+            font-weight: 500;
+            width: 140px;
+            flex-shrink: 0;
+        }
+
+        .info-value {
+            color: #1a1a1a;
+            font-weight: 500;
+        }
+
+        .allergy-badge {
+            display: inline-block;
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 0.4rem 0.9rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .tab {
+            padding: 0.75rem 1.5rem;
+            background: none;
+            border: none;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            color: #6b7280;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            color: #1e3a8a;
+            border-bottom-color: #1e3a8a;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #e5e7eb;
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 2rem;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -2.4rem;
+            top: 0.3rem;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #17a2b8;
+            border: 3px solid white;
+            box-shadow: 0 0 0 2px #17a2b8;
+        }
+
+        .timeline-date {
+            font-size: 0.85rem;
+            color: #6b7280;
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-card {
+            background: #f9fafb;
+            padding: 1.2rem;
+            border-radius: 10px;
+            border-left: 3px solid #17a2b8;
+        }
+
+        .timeline-title {
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-content {
+            font-size: 0.9rem;
+            color: #6b7280;
+            line-height: 1.6;
+        }
+
+        .prescription-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .prescription-item {
+            background: #f9fafb;
+            padding: 1rem;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .prescription-details {
+            flex: 1;
+        }
+
+        .medication-name-text {
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 0.3rem;
+        }
+
+        .medication-info {
+            font-size: 0.85rem;
+            color: #6b7280;
+        }
+
+        .prescription-date {
+            font-size: 0.8rem;
+            color: #9ca3af;
+        }
+
+        .document-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .document-card {
+            background: #f9fafb;
+            padding: 1.2rem;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .document-card:hover {
+            background: #f3f4f6;
+            transform: translateY(-2px);
+        }
+
+        .document-icon {
+            width: 60px;
+            height: 60px;
+            background: #17a2b8;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+        }
+
+        .document-icon svg {
+            width: 30px;
+            height: 30px;
+            fill: white;
+        }
+
+        .document-name {
+            font-weight: 600;
+            color: #1a1a1a;
+            font-size: 0.9rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .document-meta {
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+
+        @media (max-width: 1200px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header,
+            .main-container {
+                padding: 1rem;
+            }
+
+            .nav-menu {
+                display: none;
+            }
+
+            .patient-header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">CUROVA</div>
+        <div class="nav-menu">
+            <a href="#" class="nav-item">Dashboard</a>
+            <a href="#" class="nav-item">Schedule</a>
+            <a href="#" class="nav-item active">Patients</a>
+            <a href="#" class="nav-item">Medical Records</a>
+            <a href="#" class="nav-item">Messages</a>
+        </div>
+        <div class="header-right">
+            <div class="notification-icon">🔔</div>
+            <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=100&h=100&fit=crop" alt="Doctor" class="user-avatar">
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div class="back-button" onclick="history.back()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+            </svg>
+            Back to Patients
+        </div>
+
+        <div class="patient-header-card">
+            <div class="patient-header-content">
+                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop" alt="Patient" class="patient-avatar-large">
+                <div class="patient-info">
+                    <div class="patient-name-header">Ahmed Rahman</div>
+                    <div class="patient-meta">
+                        <div class="meta-item">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+                            </svg>
+                            52 years old • Male
+                        </div>
+                        <div class="meta-item">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                            </svg>
+                            Chattogram, Bangladesh
+                        </div>
+                        <div class="meta-item">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+                            </svg>
+                            +880 1764-860972
+                        </div>
+                        <div class="meta-item">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/>
+                            </svg>
+                            Patient since Jan 2023
+                        </div>
+                    </div>
+                </div>
+                <div class="action-buttons">
+                    <button class="btn-primary">📝 Create Record</button>
+                    <button class="btn-primary">💊 New Prescription</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-grid">
+            <div>
+                <div class="card">
+                    <div class="card-title">Patient Information</div>
+                    <div class="info-row">
+                        <div class="info-label">Patient ID</div>
+                        <div class="info-value">PT-2023-0142</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Date of Birth</div>
+                        <div class="info-value">March 15, 1973</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Blood Group</div>
+                        <div class="info-value">O+</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Email</div>
+                        <div class="info-value">ahmed.rahman@email.com</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Emergency Contact</div>
+                        <div class="info-value">Sarah Rahman<br>+880 1712-345678</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">Allergies</div>
+                    <div>
+                        <span class="allergy-badge">🥜 Peanuts</span>
+                        <span class="allergy-badge">💊 Penicillin</span>
+                        <span class="allergy-badge">🌼 Pollen</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">Current Medications</div>
+                    <div class="prescription-list">
+                        <div class="prescription-item">
+                            <div class="prescription-details">
+                                <div class="medication-name-text">Metformin 500mg</div>
+                                <div class="medication-info">Twice daily • Before meals</div>
+                            </div>
+                        </div>
+                        <div class="prescription-item">
+                            <div class="prescription-details">
+                                <div class="medication-name-text">Atorvastatin 20mg</div>
+                                <div class="medication-info">Once daily • Bedtime</div>
+                            </div>
+                        </div>
+                        <div class="prescription-item">
+                            <div class="prescription-details">
+                                <div class="medication-name-text">Aspirin 75mg</div>
+                                <div class="medication-info">Once daily • After breakfast</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="card">
+                    <div class="tabs">
+                        <button class="tab active">Medical History</button>
+                        <button class="tab">Prescriptions</button>
+                        <button class="tab">Documents</button>
+                        <button class="tab">Lab Results</button>
+                    </div>
+
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-date">October 28, 2025 • 10:00 AM</div>
+                            <div class="timeline-card">
+                                <div class="timeline-title">Follow-up - Diabetes Management</div>
+                                <div class="timeline-content">
+                                    <strong>Diagnosis:</strong> Type 2 Diabetes Mellitus (controlled)<br>
+                                    <strong>HbA1c:</strong> 6.8% (improved from 7.2%)<br>
+                                    <strong>Treatment:</strong> Continue current medication regimen. Patient showing good compliance. Blood glucose levels stable. Recommended continued diet control and regular exercise.<br>
+                                    <strong>Next Visit:</strong> 3 months
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-date">September 15, 2025 • 2:30 PM</div>
+                            <div class="timeline-card">
+                                <div class="timeline-title">Routine Checkup</div>
+                                <div class="timeline-content">
+                                    <strong>Vitals:</strong> BP 130/85, HR 78, Temp 98.4°F<br>
+                                    <strong>Assessment:</strong> Patient reports occasional fatigue. Blood work ordered to check cholesterol and liver function.<br>
+                                    <strong>Prescriptions:</strong> Renewed Metformin and Atorvastatin prescriptions for 3 months.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-date">July 10, 2025 • 11:00 AM</div>
+                            <div class="timeline-card">
+                                <div class="timeline-title">Cardiac Consultation</div>
+                                <div class="timeline-content">
+                                    <strong>Chief Complaint:</strong> Chest discomfort during exercise<br>
+                                    <strong>Tests:</strong> ECG normal, Stress test negative<br>
+                                    <strong>Diagnosis:</strong> Mild angina, likely related to diabetes<br>
+                                    <strong>Treatment:</strong> Added Aspirin 75mg to medication regimen. Advised gradual increase in physical activity.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-date">May 5, 2025 • 9:00 AM</div>
+                            <div class="timeline-card">
+                                <div class="timeline-title">Diabetes Review</div>
+                                <div class="timeline-content">
+                                    <strong>HbA1c:</strong> 7.2% (baseline)<br>
+                                    <strong>Treatment Plan:</strong> Started Metformin 500mg twice daily. Dietary counseling provided. Patient enrolled in diabetes education program.<br>
+                                    <strong>Goals:</strong> HbA1c <7% within 6 months
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-date">January 20, 2023 • 10:30 AM</div>
+                            <div class="timeline-card">
+                                <div class="timeline-title">Initial Consultation</div>
+                                <div class="timeline-content">
+                                    <strong>New Patient Registration</strong><br>
+                                    Comprehensive health assessment completed. Family history of diabetes noted. Blood work and baseline tests ordered.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

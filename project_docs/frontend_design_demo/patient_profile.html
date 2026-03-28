@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CUROVA - My Profile</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f5f5f7;
+            color: #333;
+        }
+
+        .header {
+            background: white;
+            padding: 1rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2.5rem;
+            align-items: center;
+        }
+
+        .nav-item {
+            color: #9ca3af;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s;
+            cursor: pointer;
+            padding-bottom: 1.5rem;
+        }
+
+        .nav-item:hover {
+            color: #1e3a8a;
+        }
+
+        .nav-item.active {
+            color: #1e3a8a;
+            border-bottom: 3px solid #1e3a8a;
+        }
+
+        .header-right {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            background: #f1f5f9;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        .main-container {
+            padding: 2.5rem 3rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            color: #6b7280;
+            font-size: 0.95rem;
+        }
+
+        .profile-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+        }
+
+        .card {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .profile-avatar-section {
+            text-align: center;
+        }
+
+        .avatar-upload {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 1.5rem;
+        }
+
+        .avatar-large {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #e5e7eb;
+        }
+
+        .avatar-upload-btn {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            width: 40px;
+            height: 40px;
+            background: #17a2b8;
+            border: 3px solid white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .avatar-upload-btn:hover {
+            background: #138496;
+            transform: scale(1.1);
+        }
+
+        .avatar-upload-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: white;
+        }
+
+        .profile-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 0.3rem;
+        }
+
+        .profile-id {
+            color: #6b7280;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .profile-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .stat-box {
+            background: #f9fafb;
+            padding: 1rem;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-bottom: 0.3rem;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .tab {
+            padding: 0.75rem 1.5rem;
+            background: none;
+            border: none;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            color: #6b7280;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            color: #1e3a8a;
+            border-bottom-color: #1e3a8a;
+        }
+
+        .form-section {
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #f3f4f6;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-input,
+        .form-textarea,
+        .form-select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: #17a2b8;
+            box-shadow: 0 0 0 3px rgba(23, 162, 184, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .tag-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .tag {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 0.4rem 0.9rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tag-remove {
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        .add-tag-btn {
+            background: #f3f4f6;
+            color: #374151;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .add-tag-btn:hover {
+            background: #e5e7eb;
+        }
+
+        .password-requirement {
+            font-size: 0.85rem;
+            color: #6b7280;
+            padding: 0.3rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .requirement-icon {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #d1d5db;
+        }
+
+        .requirement-icon.met {
+            background: #10b981;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            padding-top: 2rem;
+            border-top: 2px solid #e5e7eb;
+        }
+
+        .btn-cancel {
+            background: #f3f4f6;
+            color: #374151;
+            border: none;
+            padding: 0.9rem 2rem;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-cancel:hover {
+            background: #e5e7eb;
+        }
+
+        .btn-save {
+            background: #17a2b8;
+            color: white;
+            border: none;
+            padding: 0.9rem 2.5rem;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-save:hover {
+            background: #138496;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(23, 162, 184, 0.3);
+        }
+
+        .danger-zone {
+            background: #fef2f2;
+            border: 2px solid #fee2e2;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-top: 2rem;
+        }
+
+        .danger-title {
+            color: #991b1b;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .danger-text {
+            color: #6b7280;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        @media (max-width: 968px) {
+            .profile-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header,
+            .main-container {
+                padding: 1rem;
+            }
+
+            .nav-menu {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">CUROVA</div>
+        <div class="nav-menu">
+            <a href="#" class="nav-item">Dashboard</a>
+            <a href="#" class="nav-item">Appointments</a>
+            <a href="#" class="nav-item">Medical Records</a>
+            <a href="#" class="nav-item">Prescriptions</a>
+            <a href="#" class="nav-item active">Profile</a>
+        </div>
+        <div class="header-right">
+            <div class="notification-icon">🔔</div>
+            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop" alt="User" class="user-avatar">
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div class="page-header">
+            <h1 class="page-title">My Profile</h1>
+            <p class="page-subtitle">Manage your personal information and account settings</p>
+        </div>
+
+        <div class="profile-grid">
+            <div class="card profile-avatar-section">
+                <div class="avatar-upload">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop" alt="Profile" class="avatar-large">
+                    <div class="avatar-upload-btn">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="profile-name">Ahmed Rahman</div>
+                <div class="profile-id">Patient ID: PT-2023-0142</div>
+
+                <div class="profile-stats">
+                    <div class="stat-box">
+                        <div class="stat-value">12</div>
+                        <div class="stat-label">Total Visits</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value">4</div>
+                        <div class="stat-label">Active Meds</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value">3</div>
+                        <div class="stat-label">Upcoming</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value">2y</div>
+                        <div class="stat-label">Member Since</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="tabs">
+                    <button class="tab active">Personal Info</button>
+                    <button class="tab">Medical Info</button>
+                    <button class="tab">Security</button>
+                </div>
+
+                <div id="personalInfoTab">
+                    <form>
+                        <div class="form-section">
+                            <div class="section-title">Basic Information</div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">First Name</label>
+                                    <input type="text" class="form-input" value="Ahmed">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Last Name</label>
+                                    <input type="text" class="form-input" value="Rahman">
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Date of Birth</label>
+                                    <input type="date" class="form-input" value="1973-03-15">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Gender</label>
+                                    <select class="form-select">
+                                        <option>Male</option>
+                                        <option>Female</option>
+                                        <option>Other</option>
+                                        <option>Prefer not to say</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Blood Group</label>
+                                <select class="form-select">
+                                    <option>O+</option>
+                                    <option>O-</option>
+                                    <option>A+</option>
+                                    <option>A-</option>
+                                    <option>B+</option>
+                                    <option>B-</option>
+                                    <option>AB+</option>
+                                    <option>AB-</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <div class="section-title">Contact Information</div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Email Address</label>
+                                <input type="email" class="form-input" value="ahmed.rahman@email.com">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Phone Number</label>
+                                <input type="tel" class="form-input" value="+880 1764-860972">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Address</label>
+                                <textarea class="form-input" rows="3">House 42, Road 15, Block C
+Panchlaish, Chattogram-4203
+Bangladesh</textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <div class="section-title">Emergency Contact</div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Emergency Contact Name</label>
+                                <input type="text" class="form-input" value="Sarah Rahman">
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Relationship</label>
+                                    <input type="text" class="form-input" value="Spouse">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Emergency Phone</label>
+                                    <input type="tel" class="form-input" value="+880 1712-345678">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn-cancel">Cancel</button>
+                            <button type="submit" class="btn-save">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="medicalInfoTab" style="display: none;">
+                    <form>
+                        <div class="form-section">
+                            <div class="section-title">Allergies</div>
+                            
+                            <div class="tag-container">
+                                <span class="tag">
+                                    Peanuts
+                                    <span class="tag-remove">×</span>
+                                </span>
+                                <span class="tag">
+                                    Penicillin
+                                    <span class="tag-remove">×</span>
+                                </span>
+                                <span class="tag">
+                                    Pollen
+                                    <span class="tag-remove">×</span>
+                                </span>
+                            </div>
+                            <button type="button" class="add-tag-btn">+ Add Allergy</button>
+                        </div>
+
+                        <div class="form-section">
+                            <div class="section-title">Chronic Conditions</div>
+                            
+                            <div class="tag-container">
+                                <span class="tag">
+                                    Type 2 Diabetes
+                                    <span class="tag-remove">×</span>
+                                </span>
+                                <span class="tag">
+                                    Hypertension
+                                    <span class="tag-remove">×</span>
+                                </span>
+                            </div>
+                            <button type="button" class="add-tag-btn">+ Add Condition</button>
+                        </div>
+
+                        <div class="form-section">
+                            <div class="section-title">Medical History</div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Past Surgeries</label>
+                                <textarea class="form-input" rows="3" placeholder="List any past surgeries..."></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Family Medical History</label>
+                                <textarea class="form-input" rows="3" placeholder="Any significant family medical history..."></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn-cancel">Cancel</button>
+                            <button type="submit" class="btn-save">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="securityTab" style="display: none;">
+                    <form>
+                        <div class="form-section">
+                            <div class="section-title">Change Password</div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Current Password</label>
+                                <input type="password" class="form-input" placeholder="Enter current password">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">New Password</label>
+                                <input type="password" class="form-input" placeholder="Enter new password">
+                                <div style="margin-top: 0.8rem;">
+                                    <div class="password-requirement">
+                                        <div class="requirement-icon"></div>
+                                        At least 8 characters
+                                    </div>
+                                    <div class="password-requirement">
+                                        <div class="requirement-icon"></div>
+                                        Contains uppercase and lowercase letters
+                                    </div>
+                                    <div class="password-requirement">
+                                        <div class="requirement-icon"></div>
+                                        Contains at least one number
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Confirm New Password</label>
+                                <input type="password" class="form-input" placeholder="Confirm new password">
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn-cancel">Cancel</button>
+                            <button type="submit" class="btn-save">Update Password</button>
+                        </div>
+                    </form>
+
+                    <div class="danger-zone">
+                        <div class="danger-title">Danger Zone</div>
+                        <div class="danger-text">
+                            Once you delete your account, there is no going back. Please be certain.
+                        </div>
+                        <button type="button" class="btn-danger">Delete Account</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.querySelectorAll('.tab').forEach((tab, index) => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                
+                document.getElementById('personalInfoTab').style.display = 'none';
+                document.getElementById('medicalInfoTab').style.display = 'none';
+                document.getElementById('securityTab').style.display = 'none';
+                
+                if (index === 0) {
+                    document.getElementById('personalInfoTab').style.display = 'block';
+                } else if (index === 1) {
+                    document.getElementById('medicalInfoTab').style.display = 'block';
+                } else if (index === 2) {
+                    document.getElementById('securityTab').style.display = 'block';
+                }
+            });
+        });
+
+        document.querySelectorAll('.tag-remove').forEach(remove => {
+            remove.addEventListener('click', function() {
+                this.parentElement.remove();
+            });
+        });
+    </script>
+</body>
+</html>

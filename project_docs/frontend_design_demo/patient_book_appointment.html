@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CUROVA - Book Appointment</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f5f5f7;
+            color: #333;
+        }
+
+        .header {
+            background: white;
+            padding: 1rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2.5rem;
+            align-items: center;
+        }
+
+        .nav-item {
+            color: #9ca3af;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s;
+            cursor: pointer;
+            padding-bottom: 1.5rem;
+        }
+
+        .nav-item.active {
+            color: #1e3a8a;
+            border-bottom: 3px solid #1e3a8a;
+        }
+
+        .header-right {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        .main-container {
+            padding: 2.5rem 3rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            color: #6b7280;
+            font-size: 0.95rem;
+        }
+
+        .booking-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+
+        .card {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .step-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .step-indicator::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #e5e7eb;
+            z-index: 0;
+        }
+
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+            flex: 1;
+        }
+
+        .step-number {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #e5e7eb;
+            color: #9ca3af;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            transition: all 0.3s;
+        }
+
+        .step.active .step-number {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .step.completed .step-number {
+            background: #10b981;
+            color: white;
+        }
+
+        .step-label {
+            font-size: 0.85rem;
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .step.active .step-label {
+            color: #1a1a1a;
+            font-weight: 600;
+        }
+
+        .search-filter-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+            padding: 0.75rem 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+        }
+
+        .filter-select {
+            padding: 0.75rem 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+            background: white;
+            cursor: pointer;
+        }
+
+        .doctors-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .doctor-card {
+            display: flex;
+            gap: 1.5rem;
+            padding: 1.5rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .doctor-card:hover {
+            border-color: #17a2b8;
+            box-shadow: 0 4px 12px rgba(23, 162, 184, 0.1);
+        }
+
+        .doctor-card.selected {
+            border-color: #17a2b8;
+            background: #f0f9ff;
+        }
+
+        .doctor-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            object-fit: cover;
+        }
+
+        .doctor-info {
+            flex: 1;
+        }
+
+        .doctor-name {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 0.3rem;
+        }
+
+        .doctor-specialty {
+            color: #17a2b8;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .doctor-meta {
+            display: flex;
+            gap: 1.5rem;
+            font-size: 0.85rem;
+            color: #6b7280;
+            margin-bottom: 0.8rem;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .rating {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            color: #fbbf24;
+        }
+
+        .select-btn {
+            background: #17a2b8;
+            color: white;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .select-btn:hover {
+            background: #138496;
+        }
+
+        .calendar-section {
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 1rem;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .calendar-month {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        .calendar-nav {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .nav-btn {
+            width: 35px;
+            height: 35px;
+            background: #f3f4f6;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .nav-btn:hover {
+            background: #e5e7eb;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.5rem;
+        }
+
+        .calendar-day-label {
+            text-align: center;
+            font-size: 0.8rem;
+            color: #6b7280;
+            font-weight: 600;
+            padding: 0.5rem;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .calendar-day:hover {
+            background: #f3f4f6;
+        }
+
+        .calendar-day.disabled {
+            color: #d1d5db;
+            cursor: not-allowed;
+        }
+
+        .calendar-day.disabled:hover {
+            background: transparent;
+        }
+
+        .calendar-day.selected {
+            background: #17a2b8;
+            color: white;
+            font-weight: 700;
+        }
+
+        .time-slots {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.8rem;
+        }
+
+        .time-slot {
+            padding: 0.8rem;
+            background: #f9fafb;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .time-slot:hover {
+            border-color: #17a2b8;
+            background: #f0f9ff;
+        }
+
+        .time-slot.selected {
+            background: #17a2b8;
+            color: white;
+            border-color: #17a2b8;
+        }
+
+        .time-slot.unavailable {
+            background: #f3f4f6;
+            color: #9ca3af;
+            cursor: not-allowed;
+            text-decoration: line-through;
+        }
+
+        .time-slot.unavailable:hover {
+            border-color: #e5e7eb;
+            background: #f3f4f6;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem;
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .summary-box {
+            background: #f9fafb;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 2px solid #e5e7eb;
+        }
+
+        .summary-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 1rem;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+
+        .summary-label {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        .summary-value {
+            color: #1a1a1a;
+            font-weight: 600;
+            text-align: right;
+        }
+
+        .btn-next {
+            width: 100%;
+            background: #17a2b8;
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 1rem;
+        }
+
+        .btn-next:hover {
+            background: #138496;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(23, 162, 184, 0.3);
+        }
+
+        .btn-next:disabled {
+            background: #d1d5db;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: #9ca3af;
+        }
+
+        @media (max-width: 1200px) {
+            .booking-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header,
+            .main-container {
+                padding: 1rem;
+            }
+
+            .nav-menu {
+                display: none;
+            }
+
+            .time-slots {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">CUROVA</div>
+        <div class="nav-menu">
+            <a href="#" class="nav-item">Dashboard</a>
+            <a href="#" class="nav-item active">Appointments</a>
+            <a href="#" class="nav-item">Medical Records</a>
+            <a href="#" class="nav-item">Prescriptions</a>
+            <a href="#" class="nav-item">Documents</a>
+        </div>
+        <div class="header-right">
+            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop" alt="User" class="user-avatar">
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div class="page-header">
+            <h1 class="page-title">Book an Appointment</h1>
+            <p class="page-subtitle">Schedule your consultation with our healthcare professionals</p>
+        </div>
+
+        <div class="step-indicator">
+            <div class="step active">
+                <div class="step-number">1</div>
+                <div class="step-label">Select Doctor</div>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-label">Choose Date & Time</div>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-label">Add Details</div>
+            </div>
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-label">Confirm</div>
+            </div>
+        </div>
+
+        <div class="booking-grid">
+            <div class="card">
+                <div class="search-filter-bar">
+                    <input type="text" class="search-box" placeholder="🔍 Search by doctor name or specialty">
+                    <select class="filter-select">
+                        <option>All Specialties</option>
+                        <option>Cardiology</option>
+                        <option>Neurology</option>
+                        <option>General Medicine</option>
+                        <option>Orthopedics</option>
+                        <option>Dermatology</option>
+                    </select>
+                    <select class="filter-select">
+                        <option>Sort by: Recommended</option>
+                        <option>Sort by: Rating</option>
+                        <option>Sort by: Experience</option>
+                        <option>Sort by: Availability</option>
+                    </select>
+                </div>
+
+                <div class="doctors-list">
+                    <div class="doctor-card selected">
+                        <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=200&h=200&fit=crop" alt="Dr. Nusrat Jahan" class="doctor-avatar">
+                        <div class="doctor-info">
+                            <div class="doctor-name">Dr. Nusrat Jahan</div>
+                            <div class="doctor-specialty">Cardiologist</div>
+                            <div class="doctor-meta">
+                                <div class="meta-item">
+                                    <div class="rating">
+                                        ⭐ 4.8
+                                    </div>
+                                    <span>(156 reviews)</span>
+                                </div>
+                                <div class="meta-item">
+                                    📍 Chattogram Medical Center
+                                </div>
+                                <div class="meta-item">
+                                    🎓 15 years experience
+                                </div>
+                            </div>
+                        </div>
+                        <button class="select-btn">Selected ✓</button>
+                    </div>
+
+                    <div class="doctor-card">
+                        <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=200&h=200&fit=crop" alt="Dr. Tanvir Rahman" class="doctor-avatar">
+                        <div class="doctor-info">
+                            <div class="doctor-name">Dr. Tanvir Rahman</div>
+                            <div class="doctor-specialty">Neurologist</div>
+                            <div class="doctor-meta">
+                                <div class="meta-item">
+                                    <div class="rating">
+                                        ⭐ 4.9
+                                    </div>
+                                    <span>(203 reviews)</span>
+                                </div>
+                                <div class="meta-item">
+                                    📍 Dhaka Central Hospital
+                                </div>
+                                <div class="meta-item">
+                                    🎓 12 years experience
+                                </div>
+                            </div>
+                        </div>
+                        <button class="select-btn">Select</button>
+                    </div>
+
+                    <div class="doctor-card">
+                        <img src="https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=200&h=200&fit=crop" alt="Dr. Mahmudul Islam" class="doctor-avatar">
+                        <div class="doctor-info">
+                            <div class="doctor-name">Dr. Mahmudul Islam</div>
+                            <div class="doctor-specialty">General Physician</div>
+                            <div class="doctor-meta">
+                                <div class="meta-item">
+                                    <div class="rating">
+                                        ⭐ 4.7
+                                    </div>
+                                    <span>(128 reviews)</span>
+                                </div>
+                                <div class="meta-item">
+                                    📍 Chattogram Medical Center
+                                </div>
+                                <div class="meta-item">
+                                    🎓 10 years experience
+                                </div>
+                            </div>
+                        </div>
+                        <button class="select-btn">Select</button>
+                    </div>
+
+                    <div class="doctor-card">
+                        <img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=200&h=200&fit=crop" alt="Dr. Shakil Ahmed" class="doctor-avatar">
+                        <div class="doctor-info">
+                            <div class="doctor-name">Dr. Shakil Ahmed</div>
+                            <div class="doctor-specialty">Orthopedic Surgeon</div>
+                            <div class="doctor-meta">
+                                <div class="meta-item">
+                                    <div class="rating">
+                                        ⭐ 4.6
+                                    </div>
+                                    <span>(94 reviews)</span>
+                                </div>
+                                <div class="meta-item">
+                                    📍 Sylhet Medical College
+                                </div>
+                                <div class="meta-item">
+                                    🎓 8 years experience
+                                </div>
+                            </div>
+                        </div>
+                        <button class="select-btn">Select</button>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="card" style="margin-bottom: 1.5rem;">
+                    <div class="calendar-section">
+                        <div class="section-title">Select Date</div>
+                        <div class="calendar-header">
+                            <div class="calendar-month">November 2025</div>
+                            <div class="calendar-nav">
+                                <button class="nav-btn">‹</button>
+                                <button class="nav-btn">›</button>
+                            </div>
+                        </div>
+                        <div class="calendar-grid">
+                            <div class="calendar-day-label">Sun</div>
+                            <div class="calendar-day-label">Mon</div>
+                            <div class="calendar-day-label">Tue</div>
+                            <div class="calendar-day-label">Wed</div>
+                            <div class="calendar-day-label">Thu</div>
+                            <div class="calendar-day-label">Fri</div>
+                            <div class="calendar-day-label">Sat</div>
+                            
+                            <div class="calendar-day disabled">30</div>
+                            <div class="calendar-day disabled">31</div>
+                            <div class="calendar-day disabled">1</div>
+                            <div class="calendar-day">2</div>
+                            <div class="calendar-day">3</div>
+                            <div class="calendar-day">4</div>
+                            <div class="calendar-day selected">5</div>
+                            <div class="calendar-day">6</div>
+                            <div class="calendar-day">7</div>
+                            <div class="calendar-day">8</div>
+                            <div class="calendar-day">9</div>
+                            <div class="calendar-day">10</div>
+                            <div class="calendar-day">11</div>
+                            <div class="calendar-day">12</div>
+                            <div class="calendar-day">13</div>
+                            <div class="calendar-day">14</div>
+                            <div class="calendar-day">15</div>
+                            <div class="calendar-day">16</div>
+                            <div class="calendar-day">17</div>
+                            <div class="calendar-day">18</div>
+                            <div class="calendar-day">19</div>
+                            <div class="calendar-day">20</div>
+                            <div class="calendar-day">21</div>
+                            <div class="calendar-day">22</div>
+                            <div class="calendar-day">23</div>
+                            <div class="calendar-day">24</div>
+                            <div class="calendar-day">25</div>
+                            <div class="calendar-day">26</div>
+                            <div class="calendar-day">27</div>
+                            <div class="calendar-day">28</div>
+                            <div class="calendar-day">29</div>
+                            <div class="calendar-day">30</div>
+                        </div>
+                    </div>
+
+                    <div class="calendar-section">
+                        <div class="section-title">Available Time Slots</div>
+                        <div class="time-slots">
+                            <div class="time-slot">09:00 AM</div>
+                            <div class="time-slot selected">10:00 AM</div>
+                            <div class="time-slot">11:00 AM</div>
+                            <div class="time-slot unavailable">12:00 PM</div>
+                            <div class="time-slot">02:00 PM</div>
+                            <div class="time-slot">03:00 PM</div>
+                            <div class="time-slot unavailable">04:00 PM</div>
+                            <div class="time-slot">05:00 PM</div>
+                            <div class="time-slot">06:00 PM</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="summary-box">
+                        <div class="summary-title">Appointment Summary</div>
+                        <div class="summary-item">
+                            <div class="summary-label">Doctor</div>
+                            <div class="summary-value">Dr. Nusrat Jahan</div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-label">Specialty</div>
+                            <div class="summary-value">Cardiology</div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-label">Date</div>
+                            <div class="summary-value">Nov 5, 2025</div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-label">Time</div>
+                            <div class="summary-value">10:00 AM</div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-label">Duration</div>
+                            <div class="summary-value">30 minutes</div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-label">Consultation Fee</div>
+                            <div class="summary-value">৳ 1,500</div>
+                        </div>
+                    </div>
+                    <button class="btn-next">Continue to Details →</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.querySelectorAll('.doctor-card').forEach(card => {
+            card.addEventListener('click', function() {
+                document.querySelectorAll('.doctor-card').forEach(c => {
+                    c.classList.remove('selected');
+                    c.querySelector('.select-btn').textContent = 'Select';
+                });
+                this.classList.add('selected');
+                this.querySelector('.select-btn').textContent = 'Selected ✓';
+            });
+        });
+
+        document.querySelectorAll('.calendar-day:not(.disabled)').forEach(day => {
+            day.addEventListener('click', function() {
+                document.querySelectorAll('.calendar-day').forEach(d => d.classList.remove('selected'));
+                this.classList.add('selected');
+            });
+        });
+
+        document.querySelectorAll('.time-slot:not(.unavailable)').forEach(slot => {
+            slot.addEventListener('click', function() {
+                document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
+                this.classList.add('selected');
+            });
+        });
+    </script>
+</body>
+</html>

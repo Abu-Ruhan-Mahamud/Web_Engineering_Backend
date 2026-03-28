@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CUROVA - Appointments</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f8f9fa;
+            color: #333;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            padding: 1rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2.5rem;
+            align-items: center;
+        }
+
+        .nav-item {
+            color: #64748b;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            color: #1e3a8a;
+        }
+
+        .nav-item.active {
+            border-bottom: 3px solid #1e3a8a;
+            padding-bottom: 1.5rem;
+        }
+
+        .header-right {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            background: #f1f5f9;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            background: #ef4444;
+            color: white;
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        /* Main Layout */
+        .main-container {
+            display: flex;
+            padding: 2rem 3rem;
+            gap: 2rem;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            flex-shrink: 0;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .mini-calendar {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin-bottom: 1.5rem;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .calendar-month {
+            font-weight: 600;
+            color: #1e3a8a;
+        }
+
+        .calendar-nav {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: #64748b;
+            padding: 0.2rem;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.3rem;
+        }
+
+        .calendar-day-label {
+            text-align: center;
+            font-size: 0.75rem;
+            color: #64748b;
+            font-weight: 600;
+            padding: 0.3rem;
+        }
+
+        .calendar-day {
+            text-align: center;
+            padding: 0.5rem;
+            font-size: 0.85rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .calendar-day:hover {
+            background: #f1f5f9;
+        }
+
+        .calendar-day.selected {
+            background: #1e3a8a;
+            color: white;
+        }
+
+        .calendar-day.other-month {
+            color: #cbd5e1;
+        }
+
+        /* Status Section */
+        .status-section {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .add-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #1e3a8a;
+        }
+
+        .status-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+        }
+
+        .status-badge {
+            padding: 0.4rem 0.9rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            border: 1.5px solid;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .status-badge.confirmed {
+            color: #0891b2;
+            border-color: #0891b2;
+            background: rgba(8, 145, 178, 0.05);
+        }
+
+        .status-badge.pending {
+            color: #7c3aed;
+            border-color: #7c3aed;
+            background: rgba(124, 58, 237, 0.05);
+        }
+
+        .status-badge.rescheduled {
+            color: #eab308;
+            border-color: #eab308;
+            background: rgba(234, 179, 8, 0.05);
+        }
+
+        .status-badge.canceled {
+            color: #ef4444;
+            border-color: #ef4444;
+            background: rgba(239, 68, 68, 0.05);
+        }
+
+        /* Patients Section */
+        .patients-section {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .patient-count {
+            background: #ef4444;
+            color: white;
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+
+        .patients-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.8rem;
+        }
+
+        .patient-item {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .patient-item:hover {
+            background: #f8f9fa;
+        }
+
+        .patient-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .patient-name {
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+        }
+
+        .content-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            color: #64748b;
+            font-size: 0.95rem;
+        }
+
+        /* Upcoming Appointments */
+        .upcoming-section {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin-bottom: 2rem;
+        }
+
+        .appointments-scroll {
+            display: flex;
+            gap: 1rem;
+            overflow-x: auto;
+            padding-bottom: 0.5rem;
+        }
+
+        .appointments-scroll::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .appointments-scroll::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+
+        .appointment-card {
+            min-width: 200px;
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 12px;
+            display: flex;
+            gap: 0.8rem;
+            align-items: flex-start;
+        }
+
+        .appointment-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .appointment-info {
+            flex: 1;
+        }
+
+        .appointment-time {
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-bottom: 0.3rem;
+        }
+
+        .appointment-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .appointment-age {
+            font-size: 0.8rem;
+            color: #64748b;
+            margin-bottom: 0.6rem;
+        }
+
+        .appointment-status {
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #0891b2;
+            background: rgba(8, 145, 178, 0.1);
+            display: inline-block;
+        }
+
+        .appointment-menu {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: #64748b;
+        }
+
+        /* Calendar View Controls */
+        .calendar-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .view-tabs {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .view-tab {
+            padding: 0.6rem 1.5rem;
+            border: 1px solid #e2e8f0;
+            background: white;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .view-tab:hover {
+            border-color: #5b68f4;
+        }
+
+        .view-tab.active {
+            background: #5b68f4;
+            color: white;
+            border-color: #5b68f4;
+        }
+
+        .new-appointment-btn {
+            background: #5b68f4;
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+        }
+
+        .new-appointment-btn:hover {
+            background: #4c56e0;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(91, 104, 244, 0.3);
+        }
+
+        /* Calendar Grid */
+        .calendar-view {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .calendar-week-header {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #f1f5f9;
+        }
+
+        .week-day {
+            text-align: center;
+            font-weight: 600;
+            color: #1e3a8a;
+            font-size: 0.95rem;
+        }
+
+        .calendar-month-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1rem;
+        }
+
+        .calendar-cell {
+            min-height: 120px;
+            padding: 0.8rem;
+            border: 1px solid #f1f5f9;
+            border-radius: 8px;
+            background: white;
+            transition: all 0.2s;
+        }
+
+        .calendar-cell:hover {
+            border-color: #cbd5e1;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .cell-date {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin-bottom: 0.5rem;
+        }
+
+        .cell-date.other-month {
+            color: #cbd5e1;
+        }
+
+        .cell-appointments {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .cell-appointment {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+
+        .appointment-avatars {
+            display: flex;
+            align-items: center;
+        }
+
+        .appointment-avatars img {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid white;
+            margin-left: -8px;
+        }
+
+        .appointment-avatars img:first-child {
+            margin-left: 0;
+        }
+
+        .appointment-count {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin-left: 0.3rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .main-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+            }
+
+            .patients-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header,
+            .main-container {
+                padding: 1rem;
+            }
+
+            .nav-menu {
+                display: none;
+            }
+
+            .calendar-month-grid {
+                gap: 0.5rem;
+            }
+
+            .calendar-cell {
+                min-height: 80px;
+                padding: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="logo">CUROVA</div>
+        <div class="nav-menu">
+            <a href="#" class="nav-item">Dashboard</a>
+            <a href="#" class="nav-item">Patient</a>
+            <a href="#" class="nav-item">Labs</a>
+            <a href="#" class="nav-item">Billing</a>
+            <a href="#" class="nav-item active">Appointment</a>
+        </div>
+        <div class="header-right">
+            <div class="notification-icon">
+                🔔
+                <span class="notification-badge">8</span>
+            </div>
+            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop" alt="User" class="user-avatar">
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <input type="text" class="search-box" placeholder="🔍 Search...">
+
+            <!-- Mini Calendar -->
+            <div class="mini-calendar">
+                <div class="calendar-header">
+                    <button class="calendar-nav">‹</button>
+                    <span class="calendar-month">June</span>
+                    <button class="calendar-nav">›</button>
+                </div>
+                <div class="calendar-grid">
+                    <div class="calendar-day-label">Mon</div>
+                    <div class="calendar-day-label">Tue</div>
+                    <div class="calendar-day-label">Wed</div>
+                    <div class="calendar-day-label">Thu</div>
+                    <div class="calendar-day-label">Fri</div>
+                    <div class="calendar-day-label">Sat</div>
+                    <div class="calendar-day-label">Sun</div>
+                    <div class="calendar-day">1</div>
+                    <div class="calendar-day">2</div>
+                    <div class="calendar-day">3</div>
+                    <div class="calendar-day">4</div>
+                    <div class="calendar-day">5</div>
+                    <div class="calendar-day">6</div>
+                    <div class="calendar-day">7</div>
+                    <div class="calendar-day">8</div>
+                    <div class="calendar-day">9</div>
+                    <div class="calendar-day">10</div>
+                    <div class="calendar-day">11</div>
+                    <div class="calendar-day">12</div>
+                    <div class="calendar-day">13</div>
+                    <div class="calendar-day">14</div>
+                    <div class="calendar-day">15</div>
+                    <div class="calendar-day">16</div>
+                    <div class="calendar-day">17</div>
+                    <div class="calendar-day selected">18</div>
+                    <div class="calendar-day">19</div>
+                    <div class="calendar-day">20</div>
+                    <div class="calendar-day">21</div>
+                    <div class="calendar-day">22</div>
+                    <div class="calendar-day">23</div>
+                    <div class="calendar-day">24</div>
+                    <div class="calendar-day">25</div>
+                    <div class="calendar-day">26</div>
+                    <div class="calendar-day">27</div>
+                    <div class="calendar-day">28</div>
+                    <div class="calendar-day">29</div>
+                    <div class="calendar-day">30</div>
+                    <div class="calendar-day other-month">1</div>
+                    <div class="calendar-day other-month">2</div>
+                    <div class="calendar-day other-month">3</div>
+                    <div class="calendar-day other-month">4</div>
+                </div>
+            </div>
+
+            <!-- Status Section -->
+            <div class="status-section">
+                <div class="section-title">
+                    Status
+                    <button class="add-btn">+</button>
+                </div>
+                <div class="status-badges">
+                    <div class="status-badge confirmed">Confirmed</div>
+                    <div class="status-badge pending">Pending</div>
+                    <div class="status-badge rescheduled">Rescheduled</div>
+                    <div class="status-badge canceled">Canceled</div>
+                </div>
+            </div>
+
+            <!-- Patients Section -->
+            <div class="patients-section">
+                <div class="section-title">
+                    Patients <span class="patient-count">24</span>
+                    <button class="add-btn">+</button>
+                </div>
+                <div class="patients-grid">
+                    <div class="patient-item">
+                        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop" class="patient-avatar">
+                        <span class="patient-name">Faria Jahan</span>
+                    </div>
+                    <div class="patient-item">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop" class="patient-avatar">
+                        <span class="patient-name">Riaz Hossain</span>
+                    </div>
+                    <div class="patient-item">
+                        <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop" class="patient-avatar">
+                        <span class="patient-name">Raihan Alam</span>
+                    </div>
+                    <div class="patient-item">
+                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop" class="patient-avatar">
+                        <span class="patient-name">Nusrat Jahan</span>
+                    </div>
+                    <div class="patient-item">
+                        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop" class="patient-avatar">
+                        <span class="patient-name">Rafiqul Islam</span>
+                    </div>
+                    <div class="patient-item">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop" class="patient-avatar">
+                        <span class="patient-name">Tania Rahman</span>
+                    </div>
+                    <div class="patient-item">
+                        <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100&h=100&fit=crop" class="patient-avatar">
+                        <span class="patient-name">Tanvir Alif</span>
+                    </div>
+                    <div class="patient-item">
+                        <img src="https://images.unsplash.com/photo-1489424731084-a5d8b219a5bb?w=100&h=100&fit=crop" class="patient-avatar">
+                        <span class="patient-name">Tania Rahman</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="content-header">
+                <h1 class="page-title">Appointments</h1>
+                <p class="page-subtitle">Access and filter patient information here.</p>
+            </div>
+
+            <!-- Upcoming Appointments -->
+            <div class="upcoming-section">
+                <div class="appointments-scroll">
+                    <div class="appointment-card">
+                        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop" class="appointment-avatar">
+                        <div class="appointment-info">
+                            <div class="appointment-time">10.00 AM</div>
+                            <div class="appointment-name">Faria Jahan</div>
+                            <div class="appointment-age">24 Years Old</div>
+                            <span class="appointment-status">Confirmed</span>
+                        </div>
+                        <button class="appointment-menu">⋯</button>
+                    </div>
+                    <div class="appointment-card">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop" class="appointment-avatar">
+                        <div class="appointment-info">
+                            <div class="appointment-time">11.00 AM</div>
+                            <div class="appointment-name">Riaz Hossain</div>
+                            <div class="appointment-age">30 Years Old</div>
+                            <span class="appointment-status">Confirmed</span>
+                        </div>
+                        <button class="appointment-menu">⋯</button>
+                    </div>
+                    <div class="appointment-card">
+                        <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop" class="appointment-avatar">
+                        <div class="appointment-info">
+                            <div class="appointment-time">11.00 AM</div>
+                            <div class="appointment-name">Raihan Alam</div>
+                            <div class="appointment-age">22 Years Old</div>
+                            <span class="appointment-status">Confirmed</span>
+                        </div>
+                        <button class="appointment-menu">⋯</button>
+                    </div>
+                    <div class="appointment-card">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop" class="appointment-avatar">
+                        <div class="appointment-info">
+                            <div class="appointment-time">11.00 AM</div>
+                            <div class="appointment-name">Tania Rahman</div>
+                            <div class="appointment-age">28 Years Old</div>
+                            <span class="appointment-status">Confirmed</span>
+                        </div>
+                        <button class="appointment-menu">⋯</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Calendar Controls -->
+            <div class="calendar-controls">
+                <div class="view-tabs">
+                    <button class="view-tab">Today</button>
+                    <button class="view-tab">Week</button>
+                    <button class="view-tab active">Month</button>
+                    <button class="view-tab">Year</button>
+                </div>
+                <button class="new-appointment-btn">
+                    + New Appointment
+                </button>
+            </div>
+
+            <!-- Calendar View -->
+            <div class="calendar-view">
+                <div class="calendar-week-header">
+                    <div class="week-day">MON</div>
+                    <div class="week-day">TUE</div>
+                    <div class="week-day">WED</div>
+                    <div class="week-day">THU</div>
+                    <div class="week-day">FRI</div>
+                    <div class="week-day">SAT</div>
+                    <div class="week-day">SUN</div>
+                </div>
+                <div class="calendar-month-grid">
+                    <div class="calendar-cell">
+                        <div class="cell-date">1</div>
+                        <div class="cell-appointments">
+                            <div class="cell-appointment">
+                                <div class="appointment-avatars">
+                                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=50&h=50&fit=crop">
+                                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=50&h=50&fit=crop">
+                                    <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=50&h=50&fit=crop">
+                                </div>
+                                <span class="appointment-count">+2</span>
+                                <span>Patient</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="calendar-cell">
+                        <div class="cell-date">2</div>
+                    </div>
+                    <div class="calendar-cell">
+                        <div class="cell-date">3</div>
+                    </div>
+                    <div class="calendar-cell">
+                        <div class="cell-date">4</div>
+                    </div>
+                    <div class="calendar-cell">
+                        <div class="cell-date">5</div>
+                    </div>
+                    <div class="calendar-cell">
+                        <div class="cell-date">6</div>
+                        <div class="cell-appointments">
+                            <div class="cell-appointment">
+                                <div class="appointment-avatars">
+                                    <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=50&h=50&fit=crop">
+                                    <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=50&h=50&fit=crop">
+                                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=50&h=50&fit=crop">
+                                </div>
+                                <span class="appointment-count">+2</span>
+                                <span>Patient</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="calendar-cell">
+                        <div class="cell-date">7</div>
+                    </div>
+                    <div class="calendar-cell">
+                        <div class="cell-date">8</div>
+                    </div>
+                    <div class="calendar-cell">
+                        <div class="cell-date">9</div>
+                    </div>
+                    <div class="calendar-cell">
+                        <div class="cell-date">10</div>
+                        <div class="cell-appointments">
+                            <div class="cell-appointment">
+                                <div class="appointment-avatars">
+                                    <img src="https://images.unsplash.com/photo-1489424731084-a5d8b219a5bb?w=50&h=50&fit=crop">
+                                    <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=50&h=50&fit=crop">
+                                </div>
+                                <span>Patient</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="calendar-cell">
+                        <div class="cell-date">11</div>
+                    </div>
+                    <div class="calendar-cell">
+                        <div class="cell-date">12</div>
+                    </div>
+                    <div class="calendar-cell">
+                        <div class="cell-date">13</div>
+                    </div>
+                    <div class="calendar-cell">
+                        <div class="cell-date">14</div>
+                    </div>
+                    <div class="calendar-cell">
+                        <div class="cell-date">15</div>
+                    </div>
+                    <div class="calendar-cell">
+                        <div class="cell-date">16</div>
+                    </div>
+                    <div class="calendar-cell">
+                        <div class="cell-date">17</div>
+                    </div>
+                    <div class="calendar-cell">
+                        <div class="cell-date">18</div>
+                    </div>
+                    <div class="calendar-cell">
+                        <div class="cell-date">19</div>
+                        <div class="cell-appointments">
+                            <div class="cell-appointment">
+                                <div class="appointment-avatars">
+                                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=50&h=50&fit=crop">
+                                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=50&h=50&fit=crop">
+                                    <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=50&h=50&fit=crop">
+                                    <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=50&h=50&fit=crop">
+                                </div>
+                                <span class="appointment-count">+4</span>
+                                <span>Patient</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="calendar-cell">
+                        <div class="cell-date">20</div>
+                    </div>
+                    <div class="calendar-cell">
+                        <div class="cell-date">21</div>
+                    </div>
+                    <div class="calendar-cell">
+                        <div class="cell-date">22</div>
+                        <div class="cell-appointments">
+                            <div class="cell-appointment">
+                                <div class="appointment-avatars">
+                                    <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=50&h=50&fit=crop">
+                                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=50&h=50&fit=crop">
+                                    <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=50&h=50&fit=crop">
+                                </div>
+                                <span class="appointment-count">+6</span>
+                                <span>Patient</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="calendar-cell">
+                        <div class="cell-date">23</div>
+                    </div>
+                    <div class="calendar-cell">
+                        <div class="cell-date">24</div>
+                    </div>
+                    <div class="calendar-cell">
+                        <div class="cell-date">25</div>
+                    </div>
+                    <div class="calendar-cell">
+                        <div class="cell-date">26</div>
+                        <div class="cell-appointments">
+                            <div class="cell-appointment">
+                                <div class="appointment-avatars">
+                                    <img src="https://images.unsplash.com/photo-1489424731084-a5d8b219a5bb?w=50&h=50&fit=crop">
+                                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=50&h=50&fit=crop">
+                                </div>
+                                <span class="appointment-count">+2</span>
+                                <span>Patient</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="calendar-cell">
+                        <div class="cell-date">27</div>
+                        <div class="cell-appointments">
+                            <div class="cell-appointment">
+                                <div class="appointment-avatars">
+                                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=50&h=50&fit=crop">
+                                    <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=50&h=50&fit=crop">
+                                </div>
+                                <span class="appointment-count">+2</span>
+                                <span>Patient</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="calendar-cell">
+                        <div class="cell-date">28</div>
+                    </div>
+                    <div class="calendar-cell">
+                        <div class="cell-date">29</div>
+                        <div class="cell-appointments">
+                            <div class="cell-appointment">
+                                <div class="appointment-avatars">
+                                    <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=50&h=50&fit=crop">
+                                    <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=50&h=50&fit=crop">
+                                </div>
+                                <span>Patient</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="calendar-cell">
+                        <div class="cell-date">30</div>
+                        <div class="cell-appointments">
+                            <div class="cell-appointment">
+                                <div class="appointment-avatars">
+                                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=50&h=50&fit=crop">
+                                    <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=50&h=50&fit=crop">
+                                </div>
+                                <span class="appointment-count">+2</span>
+                                <span>Patient</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="calendar-cell">
+                        <div class="cell-date other-month">31</div>
+                    </div>
+                    <div class="calendar-cell">
+                        <div class="cell-date other-month">1</div>
+                        <div class="cell-appointments">
+                            <div class="cell-appointment">
+                                <div class="appointment-avatars">
+                                    <img src="https://images.unsplash.com/photo-1489424731084-a5d8b219a5bb?w=50&h=50&fit=crop">
+                                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=50&h=50&fit=crop">
+                                </div>
+                                <span class="appointment-count">+2</span>
+                                <span>Patient</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="calendar-cell">
+                        <div class="cell-date other-month">2</div>
+                        <div class="cell-appointments">
+                            <div class="cell-appointment">
+                                <div class="appointment-avatars">
+                                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=50&h=50&fit=crop">
+                                    <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=50&h=50&fit=crop">
+                                </div>
+                                <span class="appointment-count">+2</span>
+                                <span>Patient</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="calendar-cell">
+                        <div class="cell-date other-month">3</div>
+                    </div>
+                    <div class="calendar-cell">
+                        <div class="cell-date other-month">4</div>
+                        <div class="cell-appointments">
+                            <div class="cell-appointment">
+                                <div class="appointment-avatars">
+                                    <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=50&h=50&fit=crop">
+                                    <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=50&h=50&fit=crop">
+                                </div>
+                                <span class="appointment-count">+2</span>
+                                <span>Patient</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Calendar navigation
+        const calendarDays = document.querySelectorAll('.calendar-day');
+        calendarDays.forEach(day => {
+            day.addEventListener('click', function() {
+                calendarDays.forEach(d => d.classList.remove('selected'));
+                this.classList.add('selected');
+            });
+        });
+
+        // View tabs
+        const viewTabs = document.querySelectorAll('.view-tab');
+        viewTabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                viewTabs.forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Status badges
+        const statusBadges = document.querySelectorAll('.status-badge');
+        statusBadges.forEach(badge => {
+            badge.addEventListener('click', function() {
+                this.style.opacity = this.style.opacity === '0.5' ? '1' : '0.5';
+            });
+        });
+    </script>
+</body>
+</html>

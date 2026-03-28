@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CUROVA - Create Medical Record</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f5f5f7;
+            color: #333;
+        }
+
+        .header {
+            background: white;
+            padding: 1rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        .main-container {
+            padding: 2.5rem 3rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #17a2b8;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .back-button:hover {
+            color: #138496;
+        }
+
+        .page-header {
+            background: linear-gradient(135deg, #74C3D0 0%, #17a2b8 100%);
+            padding: 2rem;
+            border-radius: 16px;
+            color: white;
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            opacity: 0.95;
+        }
+
+        .patient-info-banner {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .patient-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .patient-details {
+            flex: 1;
+        }
+
+        .patient-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 0.3rem;
+        }
+
+        .patient-meta {
+            display: flex;
+            gap: 1.5rem;
+            font-size: 0.9rem;
+            color: #6b7280;
+        }
+
+        .form-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            margin-bottom: 2rem;
+        }
+
+        .form-section {
+            margin-bottom: 2rem;
+        }
+
+        .form-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+
+        .required {
+            color: #ef4444;
+        }
+
+        .form-input,
+        .form-textarea,
+        .form-select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: #17a2b8;
+            box-shadow: 0 0 0 3px rgba(23, 162, 184, 0.1);
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .tag-input-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            min-height: 50px;
+            cursor: text;
+        }
+
+        .tag {
+            background: #e0f2fe;
+            color: #0369a1;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tag-remove {
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        .tag-input {
+            border: none;
+            outline: none;
+            flex: 1;
+            min-width: 150px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .prescription-section {
+            background: #f9fafb;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+        }
+
+        .prescription-items {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .prescription-item {
+            background: white;
+            padding: 1.2rem;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+            position: relative;
+        }
+
+        .remove-prescription {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: #fee2e2;
+            color: #991b1b;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        .add-prescription-btn {
+            background: #17a2b8;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .add-prescription-btn:hover {
+            background: #138496;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            padding-top: 2rem;
+            border-top: 2px solid #e5e7eb;
+        }
+
+        .btn-cancel {
+            background: #f3f4f6;
+            color: #374151;
+            border: none;
+            padding: 0.9rem 2rem;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-cancel:hover {
+            background: #e5e7eb;
+        }
+
+        .btn-submit {
+            background: #17a2b8;
+            color: white;
+            border: none;
+            padding: 0.9rem 2.5rem;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-submit:hover {
+            background: #138496;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(23, 162, 184, 0.3);
+        }
+
+        .help-text {
+            font-size: 0.85rem;
+            color: #6b7280;
+            margin-top: 0.3rem;
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 1rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .btn-cancel,
+            .btn-submit {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">CUROVA</div>
+    </div>
+
+    <div class="main-container">
+        <div class="back-button" onclick="history.back()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+            </svg>
+            Back to Patient
+        </div>
+
+        <div class="page-header">
+            <h1 class="page-title">Create Medical Record</h1>
+            <p class="page-subtitle">Document patient consultation and diagnosis</p>
+        </div>
+
+        <div class="patient-info-banner">
+            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop" alt="Patient" class="patient-avatar">
+            <div class="patient-details">
+                <div class="patient-name">Ahmed Rahman</div>
+                <div class="patient-meta">
+                    <span>52 years • Male</span>
+                    <span>Patient ID: PT-2023-0142</span>
+                    <span>Appointment: Oct 28, 2025 • 10:00 AM</span>
+                </div>
+            </div>
+        </div>
+
+        <form id="medicalRecordForm">
+            <div class="form-card">
+                <div class="form-section">
+                    <div class="section-title">Chief Complaint & Symptoms</div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Chief Complaint <span class="required">*</span></label>
+                        <input type="text" class="form-input" placeholder="Brief description of patient's main concern" required>
+                        <div class="help-text">Main reason for visit in patient's own words</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Symptoms <span class="required">*</span></label>
+                        <textarea class="form-textarea" placeholder="Detailed symptoms reported by patient..." required></textarea>
+                        <div class="help-text">Include onset, duration, severity, and associated symptoms</div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <div class="section-title">Examination & Vitals</div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Blood Pressure</label>
+                            <input type="text" class="form-input" placeholder="e.g., 120/80 mmHg">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Heart Rate</label>
+                            <input type="text" class="form-input" placeholder="e.g., 72 bpm">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Temperature</label>
+                            <input type="text" class="form-input" placeholder="e.g., 98.6°F">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Weight</label>
+                            <input type="text" class="form-input" placeholder="e.g., 75 kg">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Physical Examination Notes</label>
+                        <textarea class="form-textarea" placeholder="Detailed physical examination findings..."></textarea>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <div class="section-title">Diagnosis & Assessment</div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Primary Diagnosis <span class="required">*</span></label>
+                        <input type="text" class="form-input" placeholder="Main diagnosis" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Additional Diagnoses</label>
+                        <div class="tag-input-container" id="diagnosisTagContainer">
+                            <input type="text" class="tag-input" id="diagnosisInput" placeholder="Type diagnosis and press Enter">
+                        </div>
+                        <div class="help-text">Add multiple diagnoses by pressing Enter after each one</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Clinical Assessment</label>
+                        <textarea class="form-textarea" placeholder="Overall clinical assessment and reasoning..."></textarea>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <div class="section-title">Treatment Plan</div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Treatment Notes <span class="required">*</span></label>
+                        <textarea class="form-textarea" placeholder="Detailed treatment plan, recommendations, and patient instructions..." required></textarea>
+                        <div class="help-text">Include lifestyle modifications, follow-up instructions, and warnings</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Recommended Tests/Procedures</label>
+                        <textarea class="form-textarea" placeholder="Any lab tests, imaging, or procedures recommended..."></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Follow-up Required</label>
+                            <select class="form-select">
+                                <option value="">Select...</option>
+                                <option>1 week</option>
+                                <option>2 weeks</option>
+                                <option>1 month</option>
+                                <option>3 months</option>
+                                <option>6 months</option>
+                                <option>As needed</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Referral Required</label>
+                            <select class="form-select">
+                                <option value="">None</option>
+                                <option>Cardiologist</option>
+                                <option>Neurologist</option>
+                                <option>Endocrinologist</option>
+                                <option>Orthopedist</option>
+                                <option>Other Specialist</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <div class="section-title">Prescriptions</div>
+                    
+                    <div class="prescription-section">
+                        <div class="prescription-items" id="prescriptionList">
+                            <div class="prescription-item">
+                                <button type="button" class="remove-prescription" onclick="this.parentElement.remove()">×</button>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label">Medication Name</label>
+                                        <input type="text" class="form-input" placeholder="e.g., Metformin">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Dosage</label>
+                                        <input type="text" class="form-input" placeholder="e.g., 500mg">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label">Frequency</label>
+                                        <select class="form-select">
+                                            <option>Once daily</option>
+                                            <option>Twice daily</option>
+                                            <option>Three times daily</option>
+                                            <option>As needed</option>
+                                            <option>Every 4 hours</option>
+                                            <option>Every 6 hours</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Duration</label>
+                                        <input type="text" class="form-input" placeholder="e.g., 30 days">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Special Instructions</label>
+                                    <input type="text" class="form-input" placeholder="e.g., Take with food">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button type="button" class="add-prescription-btn" onclick="addPrescription()">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                            </svg>
+                            Add Another Medication
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <div class="section-title">Additional Notes</div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Private Notes</label>
+                        <textarea class="form-textarea" placeholder="Any additional notes for internal reference only..."></textarea>
+                        <div class="help-text">These notes are for medical professionals only and won't be shared with the patient</div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn-cancel" onclick="history.back()">Cancel</button>
+                    <button type="submit" class="btn-submit">Save Medical Record</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Diagnosis tag input
+        const diagnosisInput = document.getElementById('diagnosisInput');
+        const diagnosisContainer = document.getElementById('diagnosisTagContainer');
+
+        diagnosisInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && this.value.trim()) {
+                e.preventDefault();
+                const tag = document.createElement('div');
+                tag.className = 'tag';
+                tag.innerHTML = `
+                    ${this.value.trim()}
+                    <span class="tag-remove" onclick="this.parentElement.remove()">×</span>
+                `;
+                diagnosisContainer.insertBefore(tag, this);
+                this.value = '';
+            }
+        });
+
+        // Add prescription
+        function addPrescription() {
+            const prescriptionHTML = `
+                <div class="prescription-item">
+                    <button type="button" class="remove-prescription" onclick="this.parentElement.remove()">×</button>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Medication Name</label>
+                            <input type="text" class="form-input" placeholder="e.g., Metformin">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Dosage</label>
+                            <input type="text" class="form-input" placeholder="e.g., 500mg">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Frequency</label>
+                            <select class="form-select">
+                                <option>Once daily</option>
+                                <option>Twice daily</option>
+                                <option>Three times daily</option>
+                                <option>As needed</option>
+                                <option>Every 4 hours</option>
+                                <option>Every 6 hours</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Duration</label>
+                            <input type="text" class="form-input" placeholder="e.g., 30 days">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Special Instructions</label>
+                        <input type="text" class="form-input" placeholder="e.g., Take with food">
+                    </div>
+                </div>
+            `;
+            document.getElementById('prescriptionList').insertAdjacentHTML('beforeend', prescriptionHTML);
+        }
+
+        // Form submission
+        document.getElementById('medicalRecordForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Medical record saved successfully!');
+            // Here you would normally send the data to your backend
+        });
+    </script>
+</body>
+</html>
