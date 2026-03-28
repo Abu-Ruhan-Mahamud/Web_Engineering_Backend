@@ -1,6 +1,7 @@
 asgiref==3.11.1
 Django==6.0.2
 django-cors-headers==4.9.0
+dj-database-url==2.2.0
 djangorestframework==3.16.1
 google-auth==2.38.0
 pillow==12.1.0

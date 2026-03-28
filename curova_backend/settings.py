@@ -5,6 +5,7 @@ Django settings for curova_backend project.
 import os
 from pathlib import Path
 from decouple import config
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -67,16 +68,25 @@ TEMPLATES = [
 WSGI_APPLICATION = "curova_backend.wsgi.application"
 
 # Database - PostgreSQL
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": config("DB_NAME", default="curova_db"),
-        "USER": config("DB_USER", default="curova_user"),
-        "PASSWORD": config("DB_PASSWORD", default=""),
-        "HOST": config("DB_HOST", default="127.0.0.1"),
-        "PORT": config("DB_PORT", default="5432"),
+# Use DATABASE_URL from environment (Railway) or fall back to individual DB_* variables
+if config("DATABASE_URL", default=None):
+    DATABASES = {
+        "default": dj_database_url.config(
+            default=config("DATABASE_URL"),
+            conn_max_age=600
+        )
     }
-}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": config("DB_NAME", default="curova_db"),
+            "USER": config("DB_USER", default="curova_user"),
+            "PASSWORD": config("DB_PASSWORD", default=""),
+            "HOST": config("DB_HOST", default="127.0.0.1"),
+            "PORT": config("DB_PORT", default="5432"),
+        }
+    }
 
 # Custom User Model
 AUTH_USER_MODEL = "users.User"
