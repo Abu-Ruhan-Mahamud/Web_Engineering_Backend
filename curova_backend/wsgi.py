@@ -22,5 +22,21 @@ application = get_wsgi_application()
 if 'runserver' not in sys.argv and 'manage.py' not in sys.argv:
     try:
         call_command('migrate', '--noinput', verbosity=1)
+        
+        # Create test patient if it doesn't exist
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+        
+        if not User.objects.filter(email='testpatient@curova.com').exists():
+            print("Creating test patient user...")
+            User.objects.create_user(
+                email='testpatient@curova.com',
+                username='testpatient',
+                password='testpass123',
+                first_name='Test',
+                last_name='Patient',
+                user_type='patient'
+            )
+            print("Test patient created successfully!")
     except Exception as e:
-        print(f"Migration error (continuing anyway): {e}")
+        print(f"Startup error (continuing anyway): {e}")
