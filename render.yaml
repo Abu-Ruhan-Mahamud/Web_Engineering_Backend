@@ -1,0 +1,44 @@
+services:
+  - type: web
+    name: curova-backend
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput
+    startCommand: python manage.py migrate && gunicorn curova_backend.wsgi:application --bind 0.0.0.0:$PORT
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: "False"
+      - key: ALLOWED_HOSTS
+        value: curova-backend.onrender.com,localhost,127.0.0.1
+      - key: CORS_ALLOWED_ORIGINS
+        value: https://curova-frontend.onrender.com,http://localhost:5173,http://127.0.0.1:5173
+      - key: CSRF_TRUSTED_ORIGINS
+        value: https://curova-frontend.onrender.com,https://curova-backend.onrender.com,http://localhost:5173,http://127.0.0.1:5173
+      - key: DATABASE_URL
+        fromDatabase:
+          name: curova-db
+          property: connectionString
+      - key: WEB_CONCURRENCY
+        value: "2"
+
+  - type: static
+    name: curova-frontend
+    rootDir: frontend
+    buildCommand: npm ci && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_API_URL
+        value: https://curova-backend.onrender.com/api
+      - key: VITE_GOOGLE_CLIENT_ID
+        sync: false
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+
+databases:
+  - name: curova-db
+    databaseName: curova_db
+    user: curova_user
