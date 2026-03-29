@@ -1,0 +1,511 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{setspace}
+\usepackage{xcolor}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue,
+  urlcolor=blue,
+  citecolor=blue,
+  filecolor=blue
+}
+
+\onehalfspacing
+\setlength{\parskip}{0.5em}
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\begin{center}
+{\LARGE \textbf{CUROVA Healthcare Management System}}\\[0.3em]
+{\large Final Project Documentation}
+\end{center}
+
+This document is the final consolidated project documentation, prepared by following the capstone guideline flow (deliverable sequence without timeline dependence), and reconciling early D1/D2 plans with the final implemented system.
+
+\section{Deliverable-Based Development Flow (Guideline-Aligned)}
+
+The project is documented in the standard development progression:
+\begin{enumerate}
+  \item Problem definition and scope
+  \item Requirements analysis (functional and non-functional)
+  \item System architecture and design decisions
+  \item Data model and API design
+  \item Implementation (backend and frontend)
+  \item Testing and validation
+  \item Deployment and operational setup
+  \item Limitations, lessons learned, and future work
+\end{enumerate}
+
+This follows the expected capstone structure while intentionally ignoring date constraints.
+
+\section{Problem Statement and Scope}
+
+Healthcare workflows for appointment booking, medical record access, prescriptions, and lab workflows are often fragmented and role-dependent. Curova addresses this with a role-based web system for:
+
+\begin{itemize}
+  \item Patients: profile, appointments, records, prescriptions, documents, medications, lab results
+  \item Doctors: schedule, patients, record creation, lab test review
+  \item Lab technicians: lab order handling and result updates
+  \item Admin: user and appointment oversight
+\end{itemize}
+
+The system is web-first, with REST APIs powering a React frontend.
+
+\section{D1 and D2 vs Final Implementation}
+
+\subsection{D1 (Initial Requirements) Baseline}
+
+From \texttt{project\_docs/d1.tex}, core goals included:
+\begin{itemize}
+  \item Multi-role auth and access control
+  \item Patient booking and history
+  \item Doctor schedule and treatment workflow
+  \item Admin user oversight
+  \item Document handling
+  \item Medication tracking and reminders
+\end{itemize}
+
+\subsection{D2 (Initial Design) Baseline}
+
+From \texttt{project\_docs/d2.tex}, planned design emphasized:
+\begin{itemize}
+  \item Three-tier architecture (frontend, backend, database)
+  \item Django + DRF backend with PostgreSQL
+  \item Role-segmented UI and endpoint responsibilities
+  \item ER-driven data model design
+\end{itemize}
+
+\subsection{Implementation Changes}
+
+Compared with early D1/D2, final implementation evolved as follows:
+\begin{enumerate}
+  \item Stronger domain modularization: backend split into users, appointments, medical, medications, documents, lab\_tests, notifications, messaging.
+  \item Notifications implemented as a dedicated domain.
+  \item Messaging deferred: URL module exists but has no active endpoints.
+  \item Medication reminder view logic exists, but reminder CRUD routes are not currently mounted in URL config.
+  \item Deployment strategy pivoted to Render (frontend, backend, PostgreSQL).
+\end{enumerate}
+
+\section{Final System Architecture}
+
+Curova uses a three-tier architecture:
+\begin{enumerate}
+  \item Presentation tier: React + Vite frontend in \texttt{frontend/src}
+  \item Application tier: Django + DRF backend in \texttt{backend}
+  \item Data tier: PostgreSQL relational database
+\end{enumerate}
+
+\subsection{Request Flow Summary}
+
+A typical request flow:
+\begin{enumerate}
+  \item Frontend route/action in \texttt{frontend/src/App.jsx}
+  \item Axios request from service layer (for example \texttt{frontend/src/services/api.js})
+  \item Django URL resolution in \texttt{backend/curova\_backend/urls.py}
+  \item DRF view performs auth and permission checks
+  \item Serializer validates input/output
+  \item ORM reads/writes PostgreSQL
+  \item JSON response returns to frontend
+\end{enumerate}
+
+\section{Technology Stack}
+
+\subsection{Backend}
+\begin{itemize}
+  \item Python
+  \item Django 6.x
+  \item Django REST Framework
+  \item PostgreSQL
+  \item DRF token authentication
+  \item django-cors-headers
+  \item gunicorn
+\end{itemize}
+
+Dependencies: \texttt{backend/requirements.txt}
+
+\subsection{Frontend}
+\begin{itemize}
+  \item React 19
+  \item Vite 7
+  \item React Router
+  \item Axios
+\end{itemize}
+
+Dependencies: \texttt{frontend/package.json}
+
+\section{Backend Module Documentation}
+
+\subsection{Root Configuration}
+\begin{itemize}
+  \item Global URLs: \texttt{backend/curova\_backend/urls.py}
+  \item Settings: \texttt{backend/curova\_backend/settings.py}
+  \item Pagination helper: \texttt{backend/curova\_backend/pagination.py}
+\end{itemize}
+
+\subsection{users app}
+Key files:
+\begin{itemize}
+  \item \texttt{backend/users/models.py}
+  \item \texttt{backend/users/views.py}
+  \item \texttt{backend/users/permissions.py}
+  \item \texttt{backend/users/urls.py}
+  \item \texttt{backend/users/admin\_urls.py}
+\end{itemize}
+Responsibilities: registration, login/logout, Google login, profile and password updates, role-aware behavior, admin user and appointment oversight APIs.
+
+\subsection{appointments app}
+\begin{itemize}
+  \item \texttt{backend/appointments/models.py}
+  \item \texttt{backend/appointments/serializers.py}
+  \item \texttt{backend/appointments/views.py}
+  \item \texttt{backend/appointments/urls.py}
+\end{itemize}
+Responsibilities: booking flow, slot validation, role-scoped listing/detail, status updates, booked-slot queries.
+
+\subsection{medical app}
+\begin{itemize}
+  \item \texttt{backend/medical/models.py}
+  \item \texttt{backend/medical/serializers.py}
+  \item \texttt{backend/medical/views.py}
+  \item \texttt{backend/medical/urls.py}
+\end{itemize}
+Responsibilities: medical record read/write, prescription linkage, doctor-centric record creation.
+
+\subsection{medications app}
+\begin{itemize}
+  \item \texttt{backend/medications/models.py}
+  \item \texttt{backend/medications/serializers.py}
+  \item \texttt{backend/medications/views.py}
+  \item \texttt{backend/medications/urls.py}
+  \item \texttt{backend/medications/reminders.py}
+\end{itemize}
+Responsibilities: medication listing/creation, reminder model support and helper logic. Reminder view methods exist but are not currently exposed in URL config.
+
+\subsection{documents app}
+\begin{itemize}
+  \item \texttt{backend/documents/models.py}
+  \item \texttt{backend/documents/serializers.py}
+  \item \texttt{backend/documents/views.py}
+  \item \texttt{backend/documents/urls.py}
+\end{itemize}
+Responsibilities: medical document upload/retrieval with ownership and role checks.
+
+\subsection{lab\_tests app}
+\begin{itemize}
+  \item \texttt{backend/lab\_tests/models.py}
+  \item \texttt{backend/lab\_tests/serializers.py}
+  \item \texttt{backend/lab\_tests/views.py}
+  \item \texttt{backend/lab\_tests/urls.py}
+\end{itemize}
+Responsibilities: lab order lifecycle, result upload/update, doctor/lab role-specific transitions.
+
+\subsection{notifications app}
+\begin{itemize}
+  \item \texttt{backend/notifications/models.py}
+  \item \texttt{backend/notifications/serializers.py}
+  \item \texttt{backend/notifications/views.py}
+  \item \texttt{backend/notifications/urls.py}
+  \item \texttt{backend/notifications/helpers.py}
+\end{itemize}
+Responsibilities: list/unread count, mark read, mark all read, delete, clear, and event notifications from other domains.
+
+\subsection{messaging app (deferred)}
+\begin{itemize}
+  \item \texttt{backend/messaging/urls.py} currently contains empty urlpatterns.
+\end{itemize}
+
+\section{Data Model Overview}
+
+Primary entities:
+\begin{enumerate}
+  \item User
+  \item Patient
+  \item Doctor
+  \item Appointment
+  \item MedicalRecord
+  \item Prescription
+  \item Medication
+  \item MedicationReminder
+  \item MedicalDocument
+  \item LabTest
+  \item LabTestResult
+  \item Notification
+\end{enumerate}
+
+Model references:
+\texttt{backend/users/models.py},
+\texttt{backend/appointments/models.py},
+\texttt{backend/medical/models.py},
+\texttt{backend/medications/models.py},
+\texttt{backend/documents/models.py},
+\texttt{backend/lab\_tests/models.py},
+\texttt{backend/notifications/models.py}.
+
+\section{Authentication and Authorization}
+
+Authentication:
+\begin{itemize}
+  \item Token-based authentication using DRF token flow
+  \item Primary auth endpoints in \texttt{backend/users/urls.py}
+\end{itemize}
+
+Authorization:
+\begin{itemize}
+  \item Role-aware permission classes in \texttt{backend/users/permissions.py}
+  \item Endpoint-level checks inside app views
+\end{itemize}
+
+User roles:
+\begin{itemize}
+  \item patient
+  \item doctor
+  \item admin
+  \item lab\_tech
+\end{itemize}
+
+\section{API Documentation (Backend)}
+
+Base URL pattern:
+\begin{itemize}
+  \item Health: \texttt{/health/}
+  \item API root: \texttt{/api/}
+  \item Auth namespace: \texttt{/api/auth/}
+  \item Admin namespace: \texttt{/api/admin/}
+\end{itemize}
+
+\subsection{Health Endpoint}
+
+\begin{longtable}{p{2cm} p{3.6cm} p{6cm} p{2cm}}
+\toprule
+\textbf{Method} & \textbf{Path} & \textbf{Purpose} & \textbf{Auth} \\
+\midrule
+GET & /health/ & Service health check & No \\
+\bottomrule
+\end{longtable}
+
+Defined in \texttt{backend/curova\_backend/urls.py}.
+
+\subsection{Auth and User Endpoints}
+
+\begin{longtable}{p{2cm} p{4.4cm} p{4.8cm} p{2.4cm}}
+\toprule
+\textbf{Method} & \textbf{Path} & \textbf{Purpose} & \textbf{Auth} \\
+\midrule
+POST & /api/auth/register/ & Register user & No \\
+POST & /api/auth/login/ & Login and token issue & No \\
+POST & /api/auth/google-login/ & Google login & No \\
+POST & /api/auth/logout/ & Logout/token invalidation & Yes \\
+POST & /api/auth/delete-account/ & Account anonymization/deactivation & Yes \\
+GET, PUT & /api/auth/me/ & Current user profile details/update & Yes \\
+POST & /api/auth/change-password/ & Password change & Yes \\
+GET, PUT & /api/auth/profile/ & Patient profile view/update & Patient \\
+GET & /api/auth/dashboard-stats/ & Patient dashboard stats & Patient \\
+GET & /api/auth/doctors/ & Doctor list & Authenticated \\
+GET & /api/auth/doctor/dashboard-stats/ & Doctor dashboard stats & Doctor \\
+GET, PUT & /api/auth/doctor/profile/ & Doctor profile & Doctor \\
+GET, PUT & /api/auth/doctor/schedule/ & Doctor schedule & Doctor \\
+GET & /api/auth/doctor/patients/ & Doctor patient list & Doctor \\
+GET & /api/auth/doctor/patients/{patient\_id}/ & Doctor patient detail & Doctor \\
+\bottomrule
+\end{longtable}
+
+\subsection{Admin Endpoints}
+
+\begin{longtable}{p{2cm} p{4.4cm} p{4.8cm} p{2.4cm}}
+\toprule
+\textbf{Method} & \textbf{Path} & \textbf{Purpose} & \textbf{Auth} \\
+\midrule
+GET & /api/admin/stats/ & Admin statistics & Admin \\
+GET, POST & /api/admin/users/ & List/create users & Admin \\
+GET, PATCH & /api/admin/users/{user\_id}/ & User detail/update state & Admin \\
+GET & /api/admin/appointments/ & Appointment oversight list & Admin \\
+GET & /api/admin/appointments/export/ & Appointment export & Admin \\
+\bottomrule
+\end{longtable}
+
+\subsection{Appointments Endpoints}
+
+\begin{longtable}{p{2cm} p{4.4cm} p{4.8cm} p{2.4cm}}
+\toprule
+\textbf{Method} & \textbf{Path} & \textbf{Purpose} & \textbf{Auth} \\
+\midrule
+GET, POST & /api/appointments/ & List appointments / create appointment & Authenticated (role-scoped) \\
+GET & /api/appointments/booked-slots/ & Get booked slots by doctor/date & Authenticated \\
+GET, PATCH & /api/appointments/{id}/ & Appointment detail / status update & Authenticated (ownership/role constrained) \\
+\bottomrule
+\end{longtable}
+
+\subsection{Medical Record Endpoints}
+
+\begin{longtable}{p{2cm} p{4.4cm} p{4.8cm} p{2.4cm}}
+\toprule
+\textbf{Method} & \textbf{Path} & \textbf{Purpose} & \textbf{Auth} \\
+\midrule
+GET & /api/records/ & List accessible medical records & Authenticated \\
+GET & /api/records/{id}/ & Medical record detail & Authenticated \\
+POST & /api/records/create/ & Create medical record & Doctor \\
+\bottomrule
+\end{longtable}
+
+\subsection{Medication Endpoints}
+
+\begin{longtable}{p{2cm} p{4.4cm} p{4.8cm} p{2.4cm}}
+\toprule
+\textbf{Method} & \textbf{Path} & \textbf{Purpose} & \textbf{Auth} \\
+\midrule
+GET & /api/medications/ & List active medications & Patient \\
+\bottomrule
+\end{longtable}
+
+Note: Reminder endpoints are implemented in views but not exposed in current URL config.
+
+\subsection{Document Endpoints}
+
+\begin{longtable}{p{2cm} p{4.4cm} p{4.8cm} p{2.4cm}}
+\toprule
+\textbf{Method} & \textbf{Path} & \textbf{Purpose} & \textbf{Auth} \\
+\midrule
+GET, POST & /api/documents/ & List documents / upload document & Authenticated (role checks) \\
+GET, DELETE & /api/documents/{id}/ & Document detail / delete & Authenticated (ownership/role checks) \\
+\bottomrule
+\end{longtable}
+
+\subsection{Lab Test Endpoints}
+
+\begin{longtable}{p{2cm} p{4.4cm} p{4.8cm} p{2.4cm}}
+\toprule
+\textbf{Method} & \textbf{Path} & \textbf{Purpose} & \textbf{Auth} \\
+\midrule
+GET, POST & /api/lab-tests/ & List/order lab tests & Authenticated (role constrained) \\
+GET, PATCH & /api/lab-tests/{id}/ & Lab test detail / status update & Authenticated (role constrained) \\
+GET, POST & /api/lab-tests/{id}/result/ & View or create test result & Authenticated (role constrained) \\
+PATCH & /api/lab-tests/{id}/result/update/ & Update existing test result & Authenticated (role constrained) \\
+\bottomrule
+\end{longtable}
+
+\subsection{Notification Endpoints}
+
+\begin{longtable}{p{2cm} p{4.4cm} p{4.8cm} p{2.4cm}}
+\toprule
+\textbf{Method} & \textbf{Path} & \textbf{Purpose} & \textbf{Auth} \\
+\midrule
+GET & /api/notifications/ & List notifications & Authenticated \\
+PATCH & /api/notifications/{id}/read/ & Mark one notification read & Authenticated \\
+DELETE & /api/notifications/{id}/delete/ & Delete one notification & Authenticated \\
+POST & /api/notifications/mark-all-read/ & Mark all notifications read & Authenticated \\
+GET & /api/notifications/unread-count/ & Get unread notification count & Authenticated \\
+DELETE & /api/notifications/clear/ & Clear all notifications & Authenticated \\
+\bottomrule
+\end{longtable}
+
+\section{Frontend Documentation Summary}
+
+Routing and role-segmented page architecture are defined in \texttt{frontend/src/App.jsx}.
+
+Route groups:
+\begin{itemize}
+  \item Public: homepage, login, registration, policy pages
+  \item Patient: dashboard, appointments, records, prescriptions, documents, lab results, medications, notifications, profile
+  \item Doctor: dashboard, schedule, patients, patient detail, create record, notifications, profile
+  \item Admin: dashboard, users, appointments, notifications
+  \item Lab tech: orders, notifications, profile
+\end{itemize}
+
+\section{Testing and Validation Status}
+
+Current status is primarily manual validation and integration checks.
+
+Evidence in repository:
+\begin{itemize}
+  \item Backend test placeholders exist in each app test file under \texttt{backend}
+  \item Functional checks were performed through manual role-based flows and deployment checks
+\end{itemize}
+
+Improvement needed:
+\begin{enumerate}
+  \item Unit tests for serializers and validators
+  \item API integration tests by role
+  \item Permission boundary tests
+  \item End-to-end smoke tests for key user journeys
+\end{enumerate}
+
+\section{Deployment Documentation (Render)}
+
+Current deployment model:
+\begin{itemize}
+  \item Frontend on Render static service
+  \item Backend on Render web service (Gunicorn)
+  \item PostgreSQL on Render managed database
+\end{itemize}
+
+Operational references:
+\begin{itemize}
+  \item Root Render blueprint: \texttt{render.yaml}
+  \item Backend environment-based settings: \texttt{backend/curova\_backend/settings.py}
+\end{itemize}
+
+Production essentials:
+\begin{enumerate}
+  \item Correct environment variables (ALLOWED\_HOSTS, CORS\_ALLOWED\_ORIGINS, DATABASE\_URL, secrets)
+  \item Migrations on deploy
+  \item Health endpoint monitoring at \texttt{/health/}
+\end{enumerate}
+
+\section{Known Limitations and Risks}
+
+\begin{enumerate}
+  \item Messaging feature is not exposed yet (\texttt{backend/messaging/urls.py}).
+  \item Medication reminder endpoint exposure gap: reminder view logic exists but routing is incomplete in \texttt{backend/medications/urls.py}.
+  \item Automated test coverage is limited.
+  \item Advanced UX/ops hardening remains pending.
+\end{enumerate}
+
+\section{Future Work Roadmap}
+
+\subsection*{Short Term}
+\begin{enumerate}
+  \item Expose reminder CRUD routes and complete reminder UI workflow
+  \item Complete messaging API and frontend feature
+  \item Add comprehensive backend automated tests
+  \item Improve audit and reporting capabilities in admin
+\end{enumerate}
+
+\subsection*{Medium Term}
+\begin{enumerate}
+  \item Event-driven notification pipeline improvements
+  \item Enhanced observability (metrics, dashboards, alerts)
+  \item Scalability and performance profiling for high-load flows
+\end{enumerate}
+
+\subsection*{Long Term}
+\begin{enumerate}
+  \item Deeper compliance hardening and audit-trail extension
+  \item Mobile client integration over existing API surface
+\end{enumerate}
+
+\section{Appendix: Key Project References}
+
+Core design and planning references:
+\begin{itemize}
+  \item Guideline source: \texttt{project\_docs/capstone\_project\_guidelines.pdf}
+  \item D1 baseline: \texttt{project\_docs/D1\_requirement\_doc.pdf}, \texttt{project\_docs/d1.tex}
+  \item D2 baseline: \texttt{project\_docs/D2 Design Decisions (1).pdf}, \texttt{project\_docs/d2.tex}
+  \item Planning decisions: \texttt{project\_docs/PLAN.md}, \texttt{project\_docs/FINAL\_DECISIONS.md}
+\end{itemize}
+
+Interview-oriented references in repository:
+\begin{itemize}
+  \item \texttt{BACKEND\_INTERVIEW\_GUIDE.md}
+  \item \texttt{BACKEND\_FOUNDATIONS\_GUIDE.md}
+\end{itemize}
+
+\end{document}
