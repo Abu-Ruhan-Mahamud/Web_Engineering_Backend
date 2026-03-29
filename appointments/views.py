@@ -77,37 +77,11 @@ def appointment_list(request):
         # Lazy cleanup: auto-transition stale past appointments
         _cleanup_stale_appointments()
 
-        print(f"[DEBUG] appointment_list GET - User: {request.user}, Type: {request.user.user_type}")
-
         if request.user.user_type == "patient":
             qs = Appointment.objects.filter(patient=request.user.patient_profile)
-            print(f"[DEBUG] Patient query - found {qs.count()} appointments")
         elif request.user.user_type == "doctor":
-            try:
-                doctor_profile = request.user.doctor_profile
-                print(f"[DEBUG] Doctor profile found: {doctor_profile}, user_id={doctor_profile.user_id}, pk={doctor_profile.pk}")
-                
-                # Debug: show all appointments in DB for any doctor
-                all_apts = Appointment.objects.all()
-                print(f"[DEBUG] Total appointments in DB: {all_apts.count()}")
-                for apt in all_apts[:5]:  # Show first 5
-                    print(f"[DEBUG]   - Apt {apt.id}: doctor_id={apt.doctor_id}, doctor={apt.doctor}, doctor.pk={apt.doctor.pk}")
-                
-                # Now filter for this doctor
-                qs = Appointment.objects.filter(doctor=doctor_profile)
-                print(f"[DEBUG] Doctor query - doctor_profile.pk={doctor_profile.pk}, doctor_id in query filtering, found {qs.count()} appointments")
-                
-                # Also try filtering by doctor_id directly
-                qs_by_id = Appointment.objects.filter(doctor_id=doctor_profile.pk)
-                print(f"[DEBUG] Direct doctor_id filter - found {qs_by_id.count()} appointments")
-                
-            except Exception as e:
-                print(f"[DEBUG] ERROR getting doctor_profile: {type(e).__name__}: {e}")
-                import traceback
-                traceback.print_exc()
-                qs = Appointment.objects.none()
+            qs = Appointment.objects.filter(doctor=request.user.doctor_profile)
         else:
-            print(f"[DEBUG] Unknown user type: {request.user.user_type}")
             qs = Appointment.objects.none()
 
         qs = qs.select_related(
@@ -118,7 +92,6 @@ def appointment_list(request):
         status_filter = request.query_params.get("status")
         if status_filter:
             qs = qs.filter(status=status_filter)
-            print(f"[DEBUG] Applied status filter: {status_filter}")
 
         upcoming = request.query_params.get("upcoming")
         if upcoming == "true":
@@ -127,12 +100,8 @@ def appointment_list(request):
                 appointment_date__gte=today,
                 status__in=["scheduled", "confirmed"],
             ).order_by("appointment_date", "appointment_time")
-            print(f"[DEBUG] Applied upcoming filter for date {today}")
 
-        print(f"[DEBUG] Final queryset count: {qs.count()}")
-        result = paginate_queryset(qs, request, AppointmentSerializer)
-        print(f"[DEBUG] Paginated result type: {type(result)}")
-        return result
+        return paginate_queryset(qs, request, AppointmentSerializer)
 
     # POST — patient books appointment
     if request.user.user_type != "patient":
@@ -141,17 +110,12 @@ def appointment_list(request):
             status=status.HTTP_403_FORBIDDEN,
         )
 
-    print(f"[DEBUG POST] Patient booking appointment: {request.user}, data={request.data}")
-    
     serializer = CreateAppointmentSerializer(
         data=request.data,
         context={"request": request},
     )
     serializer.is_valid(raise_exception=True)
-    print(f"[DEBUG POST] Serializer validated, creating appointment...")
-    
     appointment = serializer.save()
-    print(f"[DEBUG POST] Appointment created: id={appointment.id}, doctor_id={appointment.doctor_id}, doctor={appointment.doctor}")
 
     # Notify the doctor about the new booking
     create_notification(
