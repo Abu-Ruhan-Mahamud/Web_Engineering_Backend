@@ -1,0 +1,14 @@
+ id |             email             |      username      | first_name | last_name | user_type | is_active 
+----+-------------------------------+--------------------+------------+-----------+-----------+-----------
+  5 | janedoe@curova.com            | janedoe            | Jane       | Doe       | patient   | t
+  6 | alice@curova.com              | alice              | Alice      | Smith     | patient   | t
+  4 | pranto.csecu@gmail.com        | pranto.csecu       | Pranto     | Das       | patient   | t
+  2 | testdoctor@curova.com         | testdoctor         | Sarah      | Ahmed     | doctor    | t
+  7 | admin@curova.com              | admin              | System     | Admin     | admin     | t
+ 21 | shakil.ahmed.ortho@curova.com | shakil.ahmed.ortho | Shakil     | Ahmed     | doctor    | t
+  3 | newuser@curova.com            | newuser            | New        | User      | patient   | t
+ 13 | adnan.uddin@curova.com        | adnan.uddin        | Adnan      | Uddin     | patient   | t
+ 14 | arafat.sheikh@curova.com      | arafat.sheikh      | Arafat     | Sheikh    | patient   | t
+ 22 | mahmudul.islam@curova.com     | mahmudul.islam     | Mahmudul   | Islam     | doctor    | t
+(10 rows)
+

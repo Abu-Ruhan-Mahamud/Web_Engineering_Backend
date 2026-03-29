@@ -1,0 +1,20 @@
+total 40
+drwxr-xr-x. 1 t14 t14   592 Mar 29 10:27 ./
+drwxr-xr-x. 1 t14 t14   382 Mar 29 09:57 ../
+drwxr-xr-x. 1 t14 t14   186 Mar 29 01:08 appointments/
+drwxr-xr-x. 1 t14 t14   178 Mar 29 01:07 curova_backend/
+drwxr-xr-x. 1 t14 t14   186 Mar 29 01:08 documents/
+-rw-r--r--. 1 t14 t14   937 Mar 29 10:13 .env
+-rw-r--r--. 1 t14 t14 16555 Mar 29 10:27 ers.models import User
+drwxr-xr-x. 1 t14 t14   152 Mar 29 09:58 .git/
+drwxr-xr-x. 1 t14 t14   186 Mar 29 01:08 lab_tests/
+-rwxr-xr-x. 1 t14 t14   670 Mar 27 02:28 manage.py*
+drwxr-xr-x. 1 t14 t14    42 Mar 27 02:47 media/
+drwxr-xr-x. 1 t14 t14   186 Mar 29 01:08 medical/
+drwxr-xr-x. 1 t14 t14   210 Mar 29 01:08 medications/
+drwxr-xr-x. 1 t14 t14   158 Mar 29 10:06 messaging/
+drwxr-xr-x. 1 t14 t14   190 Mar 29 01:08 notifications/
+-rw-r--r--. 1 t14 t14   203 Mar 28 22:47 render.yaml
+-rw-r--r--. 1 t14 t14   221 Mar 28 19:36 requirements.txt
+-rw-r--r--. 1 t14 t14  1205 Mar 29 10:24 s_2026 psql -U curova_user -h 127.0.0.1 -d curova_db -t -c SELECT email, username, first_name, last_name, user_type FROM users LIMIT 10;
+drwxr-xr-x. 1 t14 t14   328 Mar 29 01:08 users/

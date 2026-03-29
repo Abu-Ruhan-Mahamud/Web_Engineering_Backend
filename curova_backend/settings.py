@@ -15,6 +15,17 @@ SECRET_KEY = config("SECRET_KEY")
 DEBUG = config("DEBUG", default=False, cast=bool)
 ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="localhost,127.0.0.1").split(",")
 
+# Render/Proxy SSL settings
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+# CSRF trusted origins for production domains
+CSRF_TRUSTED_ORIGINS = [
+    url.strip() for url in config(
+        "CSRF_TRUSTED_ORIGINS",
+        default="http://localhost:5173,http://127.0.0.1:5173"
+    ).split(",") if url.strip()
+]
+
 # Application definition
 INSTALLED_APPS = [
     "django.contrib.admin",

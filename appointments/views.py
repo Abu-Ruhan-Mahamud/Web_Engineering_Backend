@@ -77,11 +77,22 @@ def appointment_list(request):
         # Lazy cleanup: auto-transition stale past appointments
         _cleanup_stale_appointments()
 
+        print(f"[DEBUG] appointment_list GET - User: {request.user}, Type: {request.user.user_type}")
+
         if request.user.user_type == "patient":
             qs = Appointment.objects.filter(patient=request.user.patient_profile)
+            print(f"[DEBUG] Patient query - found {qs.count()} appointments")
         elif request.user.user_type == "doctor":
-            qs = Appointment.objects.filter(doctor=request.user.doctor_profile)
+            try:
+                doctor_profile = request.user.doctor_profile
+                print(f"[DEBUG] Doctor profile found: {doctor_profile}")
+                qs = Appointment.objects.filter(doctor=doctor_profile)
+                print(f"[DEBUG] Doctor query - doctor_profile={doctor_profile.id}, found {qs.count()} appointments")
+            except Exception as e:
+                print(f"[DEBUG] ERROR getting doctor_profile: {e}")
+                qs = Appointment.objects.none()
         else:
+            print(f"[DEBUG] Unknown user type: {request.user.user_type}")
             qs = Appointment.objects.none()
 
         qs = qs.select_related(
@@ -92,6 +103,7 @@ def appointment_list(request):
         status_filter = request.query_params.get("status")
         if status_filter:
             qs = qs.filter(status=status_filter)
+            print(f"[DEBUG] Applied status filter: {status_filter}")
 
         upcoming = request.query_params.get("upcoming")
         if upcoming == "true":
@@ -100,8 +112,12 @@ def appointment_list(request):
                 appointment_date__gte=today,
                 status__in=["scheduled", "confirmed"],
             ).order_by("appointment_date", "appointment_time")
+            print(f"[DEBUG] Applied upcoming filter for date {today}")
 
-        return paginate_queryset(qs, request, AppointmentSerializer)
+        print(f"[DEBUG] Final queryset count: {qs.count()}")
+        result = paginate_queryset(qs, request, AppointmentSerializer)
+        print(f"[DEBUG] Paginated result type: {type(result)}, data keys: {result.data.keys() if hasattr(result, 'data') else 'N/A'}")
+        return result
 
     # POST — patient books appointment
     if request.user.user_type != "patient":
