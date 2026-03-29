@@ -29,6 +29,20 @@ media/
 *.swo
 *~
 
+# Azure App Service & Deployment
+.deployment
+.azure/
+.env.local
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
 # OS
 .DS_Store
 Thumbs.db
